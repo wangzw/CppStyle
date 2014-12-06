@@ -55,10 +55,11 @@ public class CppStyleHandler extends AbstractHandler {
 			IFile file = ((IFileEditorInput) ceditor.getEditorInput())
 					.getFile();
 
-			CppCodeFormatter.deleteAllMarkers(file);
-			
-			if (CppCodeFormatter.runCpplintOnSave(file)) {
-				CppCodeFormatter.checkFileFormat(file);
+			CppCodeFormatter formater = new CppCodeFormatter();
+			formater.deleteAllMarkers(file);
+
+			if (formater.runCpplintOnSave(file)) {
+				formater.checkFileFormat(file);
 			}
 		}
 

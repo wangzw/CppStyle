@@ -12,4 +12,5 @@ public class CppStyleConstants {
 	public static final String ENABLE_CPPLINT_PROPERTY = "cppstyle.ENABLE_CPPLINT";
 
 	public static final String CPPLINT_MARKER = "org.wangzw.plugin.cppstyle.CpplintMarker";
+	public static final String CONSOLE_NAME = "CppStyle Output";
 }

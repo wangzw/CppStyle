@@ -21,14 +21,28 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 
 public class CppCodeFormatter extends CodeFormatter {
+	private MessageConsoleStream out = null;
+	private MessageConsoleStream err = null;
+
+	public CppCodeFormatter() {
+		super();
+		setupConsoleStream();
+	}
 
 	@Override
 	public String createIndentationString(int indentationLevel) {
@@ -66,7 +80,7 @@ public class CppCodeFormatter extends CodeFormatter {
 				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 
 		if (editor == null) {
-			System.err.println("cannot get active editor.");
+			err.println("cannot get active editor.");
 			return null;
 		}
 
@@ -78,7 +92,7 @@ public class CppCodeFormatter extends CodeFormatter {
 					.getFile();
 			path = file.getLocation().toOSString();
 		} else {
-			System.err.println("can only format c/c++ source file.");
+			err.println("can only format c/c++ source file.");
 			return null;
 		}
 
@@ -107,7 +121,7 @@ public class CppCodeFormatter extends CodeFormatter {
 
 		try {
 			Process process = builder.start();
-			System.out.println("Run clang-format command: " + command);
+			out.println("Run clang-format command: " + command);
 
 			OutputStreamWriter output = new OutputStreamWriter(
 					process.getOutputStream());
@@ -136,8 +150,12 @@ public class CppCodeFormatter extends CodeFormatter {
 
 			int code = process.waitFor();
 			if (code != 0) {
-				System.err.println("clang-format return error (" + code + ").");
-				System.err.println(newSource);
+				err.println("clang-format return error (" + code + ").");
+				err.println(newSource);
+				return null;
+			}
+
+			if (0 == source.compareTo(newSource)) {
 				return null;
 			}
 
@@ -159,28 +177,26 @@ public class CppCodeFormatter extends CodeFormatter {
 		String clangformat = getClangFormatPath();
 
 		if (clangformat == null) {
-			System.err.println("clang-format is not specified.");
+			err.println("clang-format is not specified.");
 			return false;
 		}
 
 		File file = new File(clangformat);
 
 		if (!file.exists()) {
-			System.err.println("clang-format (" + clangformat
-					+ ") does not exist.");
+			err.println("clang-format (" + clangformat + ") does not exist.");
 			return false;
 		}
 
 		if (!file.canExecute()) {
-			System.err.println("clang-format (" + clangformat
-					+ ") is not executable.");
+			err.println("clang-format (" + clangformat + ") is not executable.");
 			return false;
 		}
 
 		return true;
 	}
 
-	public static void checkFileFormat(IFile file) {
+	public void checkFileFormat(IFile file) {
 		try {
 			String path = file.getLocation().toOSString();
 			String cpplint = getCpplintPath();
@@ -190,7 +206,7 @@ public class CppCodeFormatter extends CodeFormatter {
 			builder.redirectErrorStream(true);
 			Process process = builder.start();
 
-			System.out.println("Run cpplint.py command: " + command);
+			out.println("Run cpplint.py command: " + command);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					process.getInputStream()));
@@ -199,13 +215,13 @@ public class CppCodeFormatter extends CodeFormatter {
 
 			process.waitFor();
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			err.println(e.getMessage());
 		} catch (InterruptedException e) {
-			System.err.println(e.getMessage());
+			err.println(e.getMessage());
 		}
 	}
 
-	public static void parserCpplintOutput(IFile file, BufferedReader reader) {
+	private void parserCpplintOutput(IFile file, BufferedReader reader) {
 		String line = null;
 
 		String pattern = "(.+)\\:(\\d+)\\:(.+)";
@@ -222,21 +238,22 @@ public class CppCodeFormatter extends CodeFormatter {
 					if (ln != null && msg != null) {
 						createIssueMarker(file, Integer.parseInt(ln), msg);
 					}
+
+					err.println(line);
 				} else {
 					if (line.startsWith("Done") || line.startsWith("Total")) {
-						System.out.println("cpplint.py: " + line);
+						out.println("cpplint.py: " + line);
 					} else {
-						System.err.println("cpplint.py: " + line);
+						err.println("cpplint.py: " + line);
 					}
 				}
 			}
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			err.println(e.getMessage());
 		}
 	}
 
-	public static void createIssueMarker(IResource resource, int line,
-			String msg) {
+	public void createIssueMarker(IResource resource, int line, String msg) {
 		try {
 			IMarker marker = resource
 					.createMarker(CppStyleConstants.CPPLINT_MARKER);
@@ -245,11 +262,11 @@ public class CppCodeFormatter extends CodeFormatter {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.PROBLEM, true);
 		} catch (CoreException e) {
-			e.printStackTrace(System.err);
+			err.println(e.getMessage());
 		}
 	}
 
-	public static void deleteAllMarkers(IResource target) {
+	public void deleteAllMarkers(IResource target) {
 		String type = CppStyleConstants.CPPLINT_MARKER;
 
 		try {
@@ -260,11 +277,11 @@ public class CppCodeFormatter extends CodeFormatter {
 				marker.delete();
 			}
 		} catch (CoreException e) {
-			System.err.println(e.getMessage());
+			err.println(e.getMessage());
 		}
 	}
 
-	public static boolean enableCpplintOnSave(IResource resource) {
+	private boolean enableCpplintOnSave(IResource resource) {
 		boolean enable = CppStyle.getDefault().getPreferenceStore()
 				.getBoolean(CppStyleConstants.ENABLE_CPPLINT_ON_SAVE);
 
@@ -291,7 +308,7 @@ public class CppCodeFormatter extends CodeFormatter {
 		return enable;
 	}
 
-	public static boolean runCpplintOnSave(IResource resource) {
+	public boolean runCpplintOnSave(IResource resource) {
 		if (!enableCpplintOnSave(resource)) {
 			return false;
 		}
@@ -299,20 +316,19 @@ public class CppCodeFormatter extends CodeFormatter {
 		String cpplint = getCpplintPath();
 
 		if (cpplint == null) {
-			System.err.println("cpplint.py is not specified.");
+			err.println("cpplint.py is not specified.");
 			return false;
 		}
 
 		File file = new File(cpplint);
 
 		if (!file.exists()) {
-			System.err.println("cpplint.py (" + cpplint + ") does not exist.");
+			err.println("cpplint.py (" + cpplint + ") does not exist.");
 			return false;
 		}
 
 		if (!file.canExecute()) {
-			System.err.println("cpplint.py (" + cpplint
-					+ ") is not executable.");
+			err.println("cpplint.py (" + cpplint + ") is not executable.");
 			return false;
 		}
 
@@ -327,5 +343,32 @@ public class CppCodeFormatter extends CodeFormatter {
 	public static String getCpplintPath() {
 		return CppStyle.getDefault().getPreferenceStore()
 				.getString(CppStyleConstants.CPPLINT_PATH);
+	}
+
+	private void setupConsoleStream() {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		IConsole[] existing = conMan.getConsoles();
+		MessageConsole console = null;
+
+		for (int i = 0; i < existing.length; i++) {
+			if (CppStyleConstants.CONSOLE_NAME.equals(existing[i].getName())) {
+				console = (MessageConsole) existing[i];
+			}
+		}
+
+		if (console == null) {
+			// no console found, so create a new one
+			console = new MessageConsole(CppStyleConstants.CONSOLE_NAME, null);
+			conMan.addConsoles(new IConsole[] { console });
+		}
+
+		out = console.newMessageStream();
+		err = console.newMessageStream();
+
+		out.setActivateOnWrite(true);
+		err.setActivateOnWrite(true);
+
+		err.setColor(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 	}
 }
