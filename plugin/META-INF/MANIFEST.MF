@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CppStyle
+Bundle-SymbolicName: org.wangzw.cppstyle;singleton:=true
+Bundle-Version: 1.0.0.0
+Bundle-Activator: org.wangzw.plugin.cppstyle.CppStyle
+Bundle-Vendor: Zhanwei Wang
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.cdt.core,
+ org.eclipse.text,
+ org.eclipse.cdt.ui,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.ide
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

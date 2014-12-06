@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.eclipse.ui.file.save"
+            class="org.wangzw.plugin.cppstyle.ui.CppStyleHandler">
+            <activeWhen>
+            <with
+                  variable="activeEditor">
+               <instanceof
+                     value="org.eclipse.cdt.ui.ICEditor">
+               </instanceof>
+            </with>
+         </activeWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="CppStyle"
+            class="org.wangzw.plugin.cppstyle.ui.CppStylePerfPage"
+            id="org.wangzw.plugin.cppstyle.ui.CppStylePerfPage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.wangzw.plugin.cppstyle.ui.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            name="CppStyle"
+            class="org.wangzw.plugin.cppstyle.ui.CppStylePropertyPage"
+            id="org.wangzw.plugin.cppstyle.ui.CppStylePropertyPage">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.cdt.core.CodeFormatter">
+      <codeFormatter
+            name="CppStyle"
+            class="org.wangzw.plugin.cppstyle.CppCodeFormatter"
+            id="org.wangzw.plugin.cppstyle.CppCodeFormatter">
+      </codeFormatter>
+   </extension>
+   <extension
+         id="org.wangzw.plugin.cppstyle.CpplintMarker"
+         name="Cpplint Error"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <attribute name="category"/>
+      <persistent value="false"/>
+   </extension>
+</plugin>
