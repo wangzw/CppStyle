@@ -1,0 +1,8 @@
+language: java
+jdk:
+- oraclejdk7
+after_success:
+- bash deploy.sh
+env:
+  global:
+    secure: aXgMnZs91TN1+nkoMlWLlCeppVk6a2XSJyduiN0nooFyLtrKlodRy0epS7O3uSumjnYWGRDeB9QiV8Hwb+vb+xABTFMnJ132vbQhp3F7StShTtkoFDknPEhxyoecqLsHCsRN0eO0yttaDoQF4zuxf13/2dvPSQAzOJzailD7Rjs=
