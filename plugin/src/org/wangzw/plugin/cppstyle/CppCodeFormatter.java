@@ -69,6 +69,7 @@ public class CppCodeFormatter extends CodeFormatter {
 	@Override
 	public TextEdit[] format(int kind, String source, IRegion[] regions,
 			String lineSeparator) {
+		String root = null;
 
 		if (checkClangFormat() == false) {
 			return null;
@@ -91,6 +92,7 @@ public class CppCodeFormatter extends CodeFormatter {
 			IFile file = ((IFileEditorInput) ceditor.getEditorInput())
 					.getFile();
 			path = file.getLocation().toOSString();
+			root = file.getProject().getLocation().toOSString();
 		} else {
 			err.println("can only format c/c++ source file.");
 			return null;
@@ -117,6 +119,7 @@ public class CppCodeFormatter extends CodeFormatter {
 				+ sb.toString();
 
 		ProcessBuilder builder = new ProcessBuilder(commands);
+		builder.directory(new File(root));
 		builder.redirectErrorStream(true);
 
 		try {
@@ -200,13 +203,26 @@ public class CppCodeFormatter extends CodeFormatter {
 		try {
 			String path = file.getLocation().toOSString();
 			String cpplint = getCpplintPath();
-			String command = cpplint + " " + path;
+			String root = file.getProject().getLocation().toOSString();
 
-			ProcessBuilder builder = new ProcessBuilder(cpplint, path);
+			List<String> commands = new ArrayList<String>();
+			commands.add(cpplint);
+			commands.add("--root=" + root);
+			commands.add(path);
+
+			StringBuffer sb = new StringBuffer();
+
+			for (String arg : commands) {
+				sb.append(arg);
+				sb.append(' ');
+			}
+
+			ProcessBuilder builder = new ProcessBuilder(commands);
+			builder.directory(new File(root));
 			builder.redirectErrorStream(true);
 			Process process = builder.start();
 
-			out.println("Run cpplint.py command: " + command);
+			out.println("Run cpplint.py command: " + sb.toString());
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					process.getInputStream()));
