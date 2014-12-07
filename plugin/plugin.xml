@@ -47,7 +47,7 @@
    <extension
          point="org.eclipse.cdt.core.CodeFormatter">
       <codeFormatter
-            name="CppStyle"
+            name="CppStyle (clang-format)"
             class="org.wangzw.plugin.cppstyle.CppCodeFormatter"
             id="org.wangzw.plugin.cppstyle.CppCodeFormatter">
       </codeFormatter>
