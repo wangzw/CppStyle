@@ -370,6 +370,7 @@ public class CppCodeFormatter extends CodeFormatter {
 		for (int i = 0; i < existing.length; i++) {
 			if (CppStyleConstants.CONSOLE_NAME.equals(existing[i].getName())) {
 				console = (MessageConsole) existing[i];
+				console.clearConsole();
 			}
 		}
 
