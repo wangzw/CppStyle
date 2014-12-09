@@ -16,14 +16,14 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/wangzw/cppstyle">View on GitHub</a>
+          <a id="forkme_banner" href="https://github.com/wangzw/CppStyle">View on GitHub</a>
 
           <h1 id="project_title">CppStyle</h1>
           <h2 id="project_tagline"></h2>
 
             <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/wangzw/cppstyle/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/wangzw/cppstyle/tarball/master">Download this project as a tar.gz file</a>
+              <a class="zip_download_link" href="https://github.com/wangzw/CppStyle/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/wangzw/CppStyle/tarball/master">Download this project as a tar.gz file</a>
             </section>
         </header>
     </div>
@@ -81,12 +81,13 @@ sudo ln -s /usr/bin/clang-format-3.4 /usr/bin/clang-format
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>CppStyle can be installed like other eclipse plugins from the this site.</p>
+<p>CppStyle can be installed like other eclipse plugins from this site (case sensitive).</p>
 
-<p><a href="http://wangzw.github.io/cppstyle/update">http://wangzw.github.io/cppstyle/update</a></p>
+<pre><code>http://wangzw.github.io/CppStyle/update
+</code></pre>
 
 <h2>
-<a id="configure" class="anchor" href="#configure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure</h2>
+<a id="configure-cppstyle" class="anchor" href="#configure-cppstyle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure CppStyle</h2>
 
 <p>To configure CppStyle globally, go to <strong>eclipse -&gt; preferences -&gt; CppStyle</strong> page</p>
 
@@ -95,6 +96,43 @@ sudo ln -s /usr/bin/clang-format-3.4 /usr/bin/clang-format
 <p>To enable CppStyle(clang-format) as default c/c++ code formatter, go to <strong>eclipse -&gt;  preferences -&gt; C/C++ -&gt; Code Style -&gt; Formatter</strong> page and switch <strong>"Code Formatter"</strong> from <strong>[built-in]</strong> to <strong>"CppStyle (clang-format)"</strong></p>
 
 <p>To enable CppStyle(clang-format) as c/c++ code formatter for a project, go to <strong>project properties -&gt; C/C++ General -&gt; Formatter</strong> page and switch <strong>"Code Formatter"</strong> from <strong>[built-in]</strong> to <strong>"CppStyle (clang-format)"</strong></p>
+
+<h2>
+<a id="configure-clang-format" class="anchor" href="#configure-clang-format" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure clang-format</h2>
+
+<p>CppStyle does not support changing the command line parameter for both clang-format and cpplint.py. So using confgure file to configure them is the only but the best way.</p>
+
+<p>CppStyle will pass the source file's full absolute path to clang-format in command line. And clang-format will try to find the configure file named <strong>.clang-format</strong> in the source file's path, and its parent's path if not found previously, and parent's path of the parent and so on.</p>
+
+<p>So put the conigure file <strong>.clang-format</strong> into the project's root direcotry can make it work for all source files in the project.</p>
+
+<p>Further more, you can also add the configure file <strong>.clang-format</strong> into eclipse workspace root directory to make it work for all projects in the workspace.</p>
+
+<p>To generate clang-format configure file <strong>.clang-format</strong></p>
+
+<pre><code>clang-format -dump-config -style=Google &gt; .clang-format
+</code></pre>
+
+<p><strong>If no configure file named .clang-format is found, "-style=Goole" will be passed to clang-format and Google style will be used by default.</strong></p>
+
+<h2>
+<a id="configure-cpplintpy" class="anchor" href="#configure-cpplintpy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure cpplint.py</h2>
+
+<p>CppStyle will pass <strong>--root=project_root_dir</strong> and source file's full absolute path to cpplint.py in the command line. And cpplint.py also supports per-directory configurations by the configure file named CPPLINT.cfg.</p>
+
+<p>CPPLINT.cfg file can contain a number of key=value pairs.
+    Currently the following options are supported:</p>
+
+<pre><code>  set noparent
+  filter=+filter1,-filter2,...
+  exclude_files=regex
+  linelength=80
+</code></pre>
+
+<p>To get the details of these options you can run the command:</p>
+
+<pre><code>cpplint.py --help
+</code></pre>
       </section>
     </div>
 
