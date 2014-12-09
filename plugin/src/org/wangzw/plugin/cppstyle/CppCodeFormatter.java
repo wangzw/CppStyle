@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -31,11 +32,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.wangzw.plugin.cppstyle.ui.CppStyleConsolePatternMatchListener;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
+import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
 public class CppCodeFormatter extends CodeFormatter {
+	private CppStyleMessageConsole console = null;
+	private CppStyleConsolePatternMatchListener listener = null;
 	private MessageConsoleStream out = null;
 	private MessageConsoleStream err = null;
 
@@ -240,27 +244,35 @@ public class CppCodeFormatter extends CodeFormatter {
 	private void parserCpplintOutput(IFile file, BufferedReader reader) {
 		String line = null;
 
-		String pattern = "(.+)\\:(\\d+)\\:(.+)";
+		String pattern = CppStyleConstants.CPPLINT_OUTPUT_PATTERN;
 		Pattern p = Pattern.compile(pattern);
+		int lineNumGroup = CppStyleConstants.CPPLINT_PUTPUT_PATTERN_LINE_NO_GROUP;
+		int msgGroup = CppStyleConstants.CPPLINT_PUTPUT_PATTERN_MSG_GROUP;
+
+		listener.setFile(file);
 
 		try {
 			while ((line = reader.readLine()) != null) {
 				Matcher m = p.matcher(line);
 
 				if (m.matches()) {
-					String ln = m.group(2);
-					String msg = m.group(3);
+					String ln = m.group(lineNumGroup);
+					String msg = m.group(msgGroup);
 
 					if (ln != null && msg != null) {
-						createIssueMarker(file, Integer.parseInt(ln), msg);
+						int lineno = Integer.parseInt(ln);
+						createIssueMarker(file, lineno == 0 ? 1 : lineno, msg);
 					}
 
-					err.println(line);
+					err.println(CppStyleConstants.CPPLINT_CONSOLE_ERROR_PREFIX
+							+ line);
 				} else {
 					if (line.startsWith("Done") || line.startsWith("Total")) {
-						out.println("cpplint.py: " + line);
+						out.println(CppStyleConstants.CPPLINT_CONSOLE_PREFIX
+								+ line);
 					} else {
-						err.println("cpplint.py: " + line);
+						err.println(CppStyleConstants.CPPLINT_CONSOLE_PREFIX
+								+ line);
 					}
 				}
 			}
@@ -365,21 +377,24 @@ public class CppCodeFormatter extends CodeFormatter {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager conMan = plugin.getConsoleManager();
 		IConsole[] existing = conMan.getConsoles();
-		MessageConsole console = null;
 
 		for (int i = 0; i < existing.length; i++) {
 			if (CppStyleConstants.CONSOLE_NAME.equals(existing[i].getName())) {
-				console = (MessageConsole) existing[i];
+				console = (CppStyleMessageConsole) existing[i];
 				console.clearConsole();
+				listener = console.getListener();
 			}
 		}
 
 		if (console == null) {
 			// no console found, so create a new one
-			console = new MessageConsole(CppStyleConstants.CONSOLE_NAME, null);
+			listener = new CppStyleConsolePatternMatchListener();
+			console = new CppStyleMessageConsole(listener);
 			conMan.addConsoles(new IConsole[] { console });
 		}
 
+		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
+		
 		out = console.newMessageStream();
 		err = console.newMessageStream();
 
