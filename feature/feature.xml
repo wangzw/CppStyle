@@ -87,7 +87,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <url>
-      <discovery label="cppstyle" url="http://wangzw.github.io/cppstyle"/>
+      <discovery label="CppStyle" url="http://wangzw.github.io/CppStyle"/>
    </url>
 
    <plugin
