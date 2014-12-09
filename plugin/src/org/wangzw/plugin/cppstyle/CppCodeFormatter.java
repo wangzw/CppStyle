@@ -17,17 +17,18 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -74,6 +75,9 @@ public class CppCodeFormatter extends CodeFormatter {
 	public TextEdit[] format(int kind, String source, IRegion[] regions,
 			String lineSeparator) {
 		String root = null;
+		String path = null;
+		String conf = null;
+		String formatArg = "";
 
 		if (checkClangFormat() == false) {
 			return null;
@@ -81,25 +85,31 @@ public class CppCodeFormatter extends CodeFormatter {
 
 		String clangFormat = getClangFormatPath();
 
-		IEditorPart editor = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IEditorPart editor = page.getActiveEditor();
 
-		if (editor == null) {
-			err.println("cannot get active editor.");
-			return null;
-		}
-
-		String path = null;
-
-		if (editor instanceof ICEditor) {
+		if (editor != null && editor instanceof ICEditor) {
 			ICEditor ceditor = (ICEditor) editor;
 			IFile file = ((IFileEditorInput) ceditor.getEditorInput())
 					.getFile();
 			path = file.getLocation().toOSString();
 			root = file.getProject().getLocation().toOSString();
 		} else {
-			err.println("can only format c/c++ source file.");
-			return null;
+			root = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+					.toOSString();
+			path = new File(root, "a.cc").getAbsolutePath();
+		}
+
+		conf = getClangForamtConfigureFile(path);
+
+		if (conf == null) {
+			err.println("Cannot find clang-format configure file under any level parent directories of path ("
+					+ path + ").");
+			err.println("Run clang-format with Google style by default.");
+			formatArg = "-style=Google";
+		} else {
+			out.println("Use clang-format configure file (" + conf + ")");
 		}
 
 		StringBuffer sb = new StringBuffer();
@@ -117,6 +127,11 @@ public class CppCodeFormatter extends CodeFormatter {
 			sb.append(" -length=");
 			sb.append(region.getLength());
 			sb.append(' ');
+		}
+
+		if (!formatArg.isEmpty()) {
+			sb.append(formatArg);
+			commands.add(formatArg);
 		}
 
 		String command = clangFormat + " -assume-filename=" + path + " "
@@ -175,6 +190,23 @@ public class CppCodeFormatter extends CodeFormatter {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	private String getClangForamtConfigureFile(String path) {
+		File file = new File(path);
+
+		while (file != null) {
+			File dir = file.getParentFile();
+
+			File conf = new File(dir, ".clang-format");
+			if (dir != null && conf.exists()) {
+				return conf.getAbsolutePath();
+			} else {
+				file = dir;
+			}
 		}
 
 		return null;
@@ -394,7 +426,7 @@ public class CppCodeFormatter extends CodeFormatter {
 		}
 
 		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
-		
+
 		out = console.newMessageStream();
 		err = console.newMessageStream();
 

@@ -7,7 +7,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.ui.console.FileLink;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.console.IPatternMatchListener;
-import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
