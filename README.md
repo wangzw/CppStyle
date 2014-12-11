@@ -1,6 +1,6 @@
 CppStyle
 ========================
-[![Build Status](https://travis-ci.org/wangzw/cppstyle.svg?branch=master)](https://travis-ci.org/wangzw/cppstyle)
+[![Build Status](https://travis-ci.org/wangzw/CppStyle.svg?branch=master)](https://travis-ci.org/wangzw/CppStyle)
 
 **An eclipse plugin that integrate clang-format as an alternative c/c++ code formatter and check c++ coding style with cpplint.py**
 
