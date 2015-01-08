@@ -4,7 +4,7 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="CppStyle : ">
+    <meta name="description" content="CppStyle : An Eclipse plugin that integrates clang-format and cpplint.py">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -19,7 +19,7 @@
           <a id="forkme_banner" href="https://github.com/wangzw/CppStyle">View on GitHub</a>
 
           <h1 id="project_title">CppStyle</h1>
-          <h2 id="project_tagline"></h2>
+          <h2 id="project_tagline">An Eclipse plugin that integrates clang-format and cpplint.py</h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/wangzw/CppStyle/zipball/master">Download this project as a .zip file</a>
@@ -36,18 +36,18 @@
 
 <p><a href="https://travis-ci.org/wangzw/CppStyle"><img src="https://travis-ci.org/wangzw/CppStyle.svg?branch=master" alt="Build Status"></a></p>
 
-<p><strong>An eclipse plugin that integrate clang-format as an alternative c/c++ code formatter and check c++ coding style with cpplint.py</strong></p>
+<p><strong>An Eclipse plugin that integrates the clang-format tool as an alternative C/C++ code formatter and checks C++ coding style with the cpplint.py tool.</strong></p>
 
 <h2>
 <a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
 
-<p>A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use eclipse as a c/c++ IDE, but it is a little difficult to integrate an external tool to eclipse. People have to switch to a command line and run the tools to format the code and check coding style. And switch back to eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, it is irritating. </p>
+<p>A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use Eclipse as a C/C++ IDE, but it is a little difficult to integrate an external tool to Eclipse. People have to switch to a command line and run the tools to format the code and check the coding style. And then they need to switch back to Eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, this is irritating. </p>
 
-<p>The expected behavious is that people just format the code fragment by first select it and then press "command + shift + f" on MacOS or "ctrl + shift + f" on other system. And further more, run the coding style checker on save and mark all issues on the editor. That is exactly what CppStyle does.</p>
+<p>The expected behavious is that people just format the code fragment by first selecting it and then pressing <code>Command + Shift + f</code> on MacOS or <code>Ctrl + Shift + f</code> on Linux and other systems. Further more, the coding style checker is run whenever a file is saved and all the issues are marked on the editor. That is exactly what CppStyle does.</p>
 
-<p>There are many c/c++ code format tools such as "<a href="http://astyle.sourceforge.net/">astyle</a>" but currently <strong>"<a href="http://clang.llvm.org/docs/ClangFormat.html">clang-format</a>"</strong> is my favorite. It has several pre-defined styles and is highly configurable.</p>
+<p>There are many C/C++ code format tools such as "<a href="http://astyle.sourceforge.net/">astyle</a>" but currently <strong>"<a href="http://clang.llvm.org/docs/ClangFormat.html">clang-format</a>"</strong> is my favorite. It has several pre-defined styles and is highly configurable.</p>
 
-<p><strong><a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#cpplint">cpplint.py</a></strong> is a c++ coding style checker provided by google. It can be used to check the c++ code against the <a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.html">google c++ coding style</a>. It can detect many style errors and keep the consistency of coding style.</p>
+<p><strong><a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#cpplint">cpplint.py</a></strong> is a C++ coding style checker provided by google. It can be used to check the C++ code against the <a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.html">Google C++ coding style</a>. It can detect many style errors and maintain the consistency of coding style.</p>
 
 <h2>
 <a id="requirement" class="anchor" href="#requirement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirement</h2>
@@ -86,33 +86,33 @@ sudo ln -s /usr/bin/clang-format-3.4 /usr/bin/clang-format
 <pre><code>http://wangzw.github.io/CppStyle/update
 </code></pre>
 
-<p>Go to <strong>Help -&gt; Install New Software</strong> page, click <strong>Add</strong> button and then enter the name (CppStyle) and the above URL, and then click <strong>OK</strong>.</p>
+<p>Go to <strong>Help -&gt; Install New Software</strong> page, click <strong>Add</strong> button and then enter a name (<code>CppStyle</code>) and the above URL, and then click <strong>OK</strong>.</p>
 
 <p>Select <strong>CppStyle</strong> from drop-down list and then check the name <strong>CppStyle</strong> listed in the page. And then click <strong>Next</strong> and <strong>OK</strong> until restart.</p>
 
 <h2>
 <a id="configure-cppstyle" class="anchor" href="#configure-cppstyle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure CppStyle</h2>
 
-<p>To configure CppStyle globally, go to <strong>eclipse -&gt; preferences -&gt; CppStyle</strong> page</p>
+<p>To configure CppStyle globally, go to <strong>Preferences -&gt; CppStyle</strong> dialog.</p>
 
-<p>To configure CppSytle for a c/c++ project, go to <strong>project properties -&gt; CppStyle</strong> page.</p>
+<p>To configure CppSytle for a C/C++ project, go to <strong>Project properties -&gt; CppStyle</strong> dialog.</p>
 
-<p>To enable CppStyle(clang-format) as default c/c++ code formatter, go to <strong>eclipse -&gt;  preferences -&gt; C/C++ -&gt; Code Style -&gt; Formatter</strong> page and switch <strong>"Code Formatter"</strong> from <strong>[built-in]</strong> to <strong>"CppStyle (clang-format)"</strong></p>
+<p>To enable CppStyle(clang-format) as default C/C++ code formatter, go to <strong>Preferences -&gt; C/C++ -&gt; Code Style -&gt; Formatter</strong> page and switch <strong>"Code Formatter"</strong> from <strong>[built-in]</strong> to <strong>"CppStyle (clang-format)"</strong></p>
 
-<p>To enable CppStyle(clang-format) as c/c++ code formatter for a project, go to <strong>project properties -&gt; C/C++ General -&gt; Formatter</strong> page and switch <strong>"Code Formatter"</strong> from <strong>[built-in]</strong> to <strong>"CppStyle (clang-format)"</strong></p>
+<p>To enable CppStyle(clang-format) as C/C++ code formatter for a project, go to <strong>Project properties -&gt; C/C++ General -&gt; Formatter</strong> page and switch <strong>"Code Formatter"</strong> from <strong>[built-in]</strong> to <strong>"CppStyle (clang-format)"</strong></p>
 
 <h2>
-<a id="configure-clang-format" class="anchor" href="#configure-clang-format" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure clang-format</h2>
+<a id="to-configure-clang-format" class="anchor" href="#to-configure-clang-format" aria-hidden="true"><span class="octicon octicon-link"></span></a>To configure clang-format</h2>
 
-<p>CppStyle does not support changing the command line parameter for both clang-format and cpplint.py. So using confgure file to configure them is the only but the best way.</p>
+<p>CppStyle does not support appending command line parameters to clang-format and cpplint.py. So, use their respective configuration files to do this.</p>
 
-<p>CppStyle will pass the source file's full absolute path to clang-format in command line. And clang-format will try to find the configure file named <strong>.clang-format</strong> in the source file's path, and its parent's path if not found previously, and parent's path of the parent and so on.</p>
+<p>CppStyle will pass the full absolute path of the source file to clang-format in command line. And clang-format will try to find the configuration file named <strong>.clang-format</strong> in the source file's path, and its parent's path if not found previously, and parent's path of the parent and so on.</p>
 
-<p>So put the conigure file <strong>.clang-format</strong> into the project's root direcotry can make it work for all source files in the project.</p>
+<p>So put the configuration file <strong>.clang-format</strong> into the project's root direcotry can make it work for all source files in the project.</p>
 
-<p>Further more, you can also add the configure file <strong>.clang-format</strong> into eclipse workspace root directory to make it work for all projects in the workspace.</p>
+<p>Further more, you can also add the configuration file <strong>.clang-format</strong> into Eclipse workspace root directory to make it work for all projects in the workspace.</p>
 
-<p>To generate clang-format configure file <strong>.clang-format</strong></p>
+<p>To generate the clang-format configuration file <strong>.clang-format</strong>:</p>
 
 <pre><code>clang-format -dump-config -style=Google &gt; .clang-format
 </code></pre>
@@ -120,11 +120,11 @@ sudo ln -s /usr/bin/clang-format-3.4 /usr/bin/clang-format
 <p><strong>If no configure file named .clang-format is found, "-style=Google" will be passed to clang-format and Google style will be used by default.</strong></p>
 
 <h2>
-<a id="configure-cpplintpy" class="anchor" href="#configure-cpplintpy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure cpplint.py</h2>
+<a id="to-configure-cpplintpy" class="anchor" href="#to-configure-cpplintpy" aria-hidden="true"><span class="octicon octicon-link"></span></a>To configure cpplint.py</h2>
 
-<p>CppStyle will pass <strong>--root=project_root_dir</strong> and source file's full absolute path to cpplint.py in the command line. And cpplint.py also supports per-directory configurations by the configure file named CPPLINT.cfg.</p>
+<p>CppStyle will pass <strong>--root=project_root_dir</strong> and source file's full absolute path to <code>cpplint.py</code> in the command line. And <code>cpplint.py</code> also supports per-directory configuration by the configuration file named <code>CPPLINT.cfg</code>.</p>
 
-<p>CPPLINT.cfg file can contain a number of key=value pairs.
+<p><code>CPPLINT.cfg</code> file can contain a number of key=value pairs.
     Currently the following options are supported:</p>
 
 <pre><code>  set noparent
