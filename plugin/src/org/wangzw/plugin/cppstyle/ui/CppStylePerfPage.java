@@ -54,17 +54,18 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 
 		enableCpplintOnSave = new BooleanFieldEditor(
 				CppStyleConstants.ENABLE_CPPLINT_ON_SAVE,
-				"Enable cpplint on save", getFieldEditorParent());
+				CppStyleConstants.ENABLE_CPPLINT_TEXT, getFieldEditorParent());
 
 		if (!checkPathExist(CppCodeFormatter.getCpplintPath())) {
 			enableCpplintOnSave.setEnabled(false, getFieldEditorParent());
 		}
 
 		addField(enableCpplintOnSave);
-		
+
 		enableClangFormatOnSave = new BooleanFieldEditor(
 				CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE,
-				"Enable clang-format on save", getFieldEditorParent());
+				CppStyleConstants.ENABLE_CLANGFORMAT_TEXT,
+				getFieldEditorParent());
 
 		if (!checkPathExist(CppCodeFormatter.getClangFormatPath())) {
 			enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());

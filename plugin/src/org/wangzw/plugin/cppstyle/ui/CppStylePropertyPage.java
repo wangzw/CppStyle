@@ -19,8 +19,6 @@ public class CppStylePropertyPage extends PropertyPage implements
 		SelectionListener {
 
 	private static final String PROJECTS_PECIFIC_TEXT = "Enable project specific settings";
-	private static final String ENABLE_CPPLINT_TEXT = "Enable cpplint on save";
-	private static final String ENABLE_CLANGFORMAT_TEXT = "Enable clang-format on save";
 
 	private Button projectSpecificButton;
 	private Button enableCpplintOnSaveButton;
@@ -49,11 +47,11 @@ public class CppStylePropertyPage extends PropertyPage implements
 		composite = createDefaultComposite(parent);
 
 		enableCpplintOnSaveButton = new Button(composite, SWT.CHECK);
-		enableCpplintOnSaveButton.setText(ENABLE_CPPLINT_TEXT);
+		enableCpplintOnSaveButton.setText(CppStyleConstants.ENABLE_CPPLINT_TEXT);
 		enableCpplintOnSaveButton.addSelectionListener(this);
 
 		enableClangFormatOnSaveButton = new Button(composite, SWT.CHECK);
-		enableClangFormatOnSaveButton.setText(ENABLE_CLANGFORMAT_TEXT);
+		enableClangFormatOnSaveButton.setText(CppStyleConstants.ENABLE_CLANGFORMAT_TEXT);
 		enableClangFormatOnSaveButton.addSelectionListener(this);
 
 		if (!getPropertyValue(CppStyleConstants.PROJECTS_PECIFIC_PROPERTY)) {

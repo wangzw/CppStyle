@@ -9,6 +9,9 @@ public class CppStyleConstants {
 	public static final String ENABLE_CPPLINT_ON_SAVE = "cppstyle.enable.cpplint.on.save";
 	public static final String ENABLE_CLANGFORMAT_ON_SAVE = "cppstyle.enable.clangformat.on.save";
 
+	public static final String ENABLE_CPPLINT_TEXT = "Run cpplint on save";
+	public static final String ENABLE_CLANGFORMAT_TEXT = "Run clang-format on save";
+
 	public static final String PROJECTS_PECIFIC_PROPERTY = "cppstyle.ENABLE_PROJECTS_PECIFIC";
 	public static final String ENABLE_CPPLINT_PROPERTY = "cppstyle.ENABLE_CPPLINT";
 	public static final String ENABLE_CLANGFORMAT_PROPERTY = "cppstyle.ENABLE_CLANGFORMAT";
