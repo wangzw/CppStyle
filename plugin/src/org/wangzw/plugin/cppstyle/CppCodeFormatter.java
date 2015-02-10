@@ -121,6 +121,8 @@ public class CppCodeFormatter extends CodeFormatter {
 		String conf = null;
 		String formatArg = "";
 
+		showConsoleView();
+
 		if (checkClangFormat() == false) {
 			return null;
 		}
@@ -288,6 +290,8 @@ public class CppCodeFormatter extends CodeFormatter {
 
 	public void checkFileFormat(IFile file) {
 		try {
+			showConsoleView();
+
 			String path = file.getLocation().toOSString();
 			String cpplint = getCpplintPath();
 			String root = file.getProject().getLocation().toOSString();
@@ -426,6 +430,8 @@ public class CppCodeFormatter extends CodeFormatter {
 
 		String cpplint = getCpplintPath();
 
+		showConsoleView();
+
 		if (cpplint == null) {
 			err.println("cpplint.py is not specified.");
 			return false;
@@ -480,6 +486,8 @@ public class CppCodeFormatter extends CodeFormatter {
 
 		String clangFormat = getCpplintPath();
 
+		showConsoleView();
+
 		if (clangFormat == null) {
 			err.println("clang-format is not specified.");
 			return false;
@@ -530,8 +538,6 @@ public class CppCodeFormatter extends CodeFormatter {
 			conMan.addConsoles(new IConsole[] { console });
 		}
 
-		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
-
 		out = console.newMessageStream();
 		err = console.newMessageStream();
 
@@ -539,5 +545,9 @@ public class CppCodeFormatter extends CodeFormatter {
 		err.setActivateOnWrite(true);
 
 		err.setColor(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+	}
+
+	private void showConsoleView() {
+		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
 	}
 }
