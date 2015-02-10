@@ -8,9 +8,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.internal.util.Util;
 import org.wangzw.plugin.cppstyle.CppCodeFormatter;
 
 /**
@@ -26,48 +29,47 @@ public class CppStyleHandler extends AbstractHandler {
 	public CppStyleHandler() {
 	}
 
+	protected ICEditor getSaveableEditor(ExecutionEvent event) {
+
+		IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
+
+		if (activePart instanceof ICEditor) {
+			return (ICEditor) activePart;
+		}
+
+		return null;
+	}
+
 	/**
 	 * the command has been executed, so extract extract the needed information
 	 * from the application context.
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow activeWorkbenchWindow = HandlerUtil
-				.getActiveWorkbenchWindow(event);
-		IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
-
-		if (page == null) {
-			return null;
-		}
-
-		IEditorPart editor = page.getActiveEditor();
+		ICEditor editor = getSaveableEditor(event);
 
 		if (editor == null) {
 			return null;
 		}
 
-		if (editor instanceof ICEditor) {
-			ICEditor ceditor = (ICEditor) editor;
+		if (!editor.isDirty()) {
+			return null;
+		}
 
-			if (!ceditor.isDirty()) {
-				return null;
-			}
+		IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
 
-			IFile file = ((IFileEditorInput) ceditor.getEditorInput())
-					.getFile();
+		CppCodeFormatter formater = new CppCodeFormatter();
 
-			CppCodeFormatter formater = new CppCodeFormatter();
+		if (formater.runClangFormatOnSave(file)) {
+			formater.formatAndApply(editor);
+		}
 
-			if (formater.runClangFormatOnSave(file)) {
-				formater.formatAndApply(ceditor);
-			}
+		IWorkbenchPage page = editor.getSite().getPage();
+		page.saveEditor(editor, false);
 
-			ceditor.doSave(null);
+		formater.deleteAllMarkers(file);
 
-			formater.deleteAllMarkers(file);
-
-			if (formater.runCpplintOnSave(file)) {
-				formater.checkFileFormat(file);
-			}
+		if (formater.runCpplintOnSave(file)) {
+			formater.checkFileFormat(file);
 		}
 
 		return null;
