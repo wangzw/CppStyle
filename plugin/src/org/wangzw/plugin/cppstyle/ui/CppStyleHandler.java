@@ -5,6 +5,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
@@ -51,11 +52,17 @@ public class CppStyleHandler extends AbstractHandler {
 				return null;
 			}
 
-			ceditor.doSave(null);
 			IFile file = ((IFileEditorInput) ceditor.getEditorInput())
 					.getFile();
 
 			CppCodeFormatter formater = new CppCodeFormatter();
+
+			if (formater.runClangFormatOnSave(file)) {
+				formater.formatAndApply(ceditor);
+			}
+
+			ceditor.doSave(null);
+
 			formater.deleteAllMarkers(file);
 
 			if (formater.runCpplintOnSave(file)) {

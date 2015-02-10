@@ -28,6 +28,7 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 	private FileFieldEditor clangFormatPath = null;
 	private FileFieldEditor cpplintPath = null;
 	private BooleanFieldEditor enableCpplintOnSave = null;
+	private BooleanFieldEditor enableClangFormatOnSave = null;
 
 	public CppStylePerfPage() {
 		super(GRID);
@@ -60,6 +61,16 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 		}
 
 		addField(enableCpplintOnSave);
+		
+		enableClangFormatOnSave = new BooleanFieldEditor(
+				CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE,
+				"Enable clang-format on save", getFieldEditorParent());
+
+		if (!checkPathExist(CppCodeFormatter.getClangFormatPath())) {
+			enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
+		}
+
+		addField(enableClangFormatOnSave);
 	}
 
 	public void init(IWorkbench workbench) {
@@ -87,10 +98,12 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 
 	private void clangFormatPathChange(String newPath) {
 		if (!checkPathExist(newPath)) {
+			enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
 			this.setValid(false);
 			this.setMessage("Clang-format path \"" + newPath
 					+ "\" does not exist", ERROR);
 		} else {
+			enableClangFormatOnSave.setEnabled(true, getFieldEditorParent());
 			this.setValid(true);
 			this.setMessage(null, ERROR);
 		}

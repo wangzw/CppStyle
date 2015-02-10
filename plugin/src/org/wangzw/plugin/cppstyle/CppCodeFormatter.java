@@ -20,12 +20,18 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
@@ -74,6 +80,42 @@ public class CppCodeFormatter extends CodeFormatter {
 	@Override
 	public TextEdit[] format(int kind, String source, IRegion[] regions,
 			String lineSeparator) {
+
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IEditorPart editor = page.getActiveEditor();
+
+		return format(source, editor, regions);
+	}
+
+	public void formatAndApply(ICEditor editor) {
+		TextEdit rootEdit = new MultiTextEdit();
+		IDocument doc = editor.getDocumentProvider().getDocument(
+				editor.getEditorInput());
+
+		TextEdit[] editors = format(doc.get(), editor, null);
+
+		for (TextEdit e : editors) {
+			rootEdit.addChild(e);
+		}
+
+		IDocumentUndoManager manager = DocumentUndoManagerRegistry
+				.getDocumentUndoManager(doc);
+		manager.beginCompoundChange();
+
+		try {
+			rootEdit.apply(doc);
+		} catch (MalformedTreeException e) {
+			err.print(e.getMessage());
+		} catch (BadLocationException e) {
+			err.print(e.getMessage());
+		}
+
+		manager.endCompoundChange();
+	}
+
+	private TextEdit[] format(String source, IEditorPart editor,
+			IRegion[] regions) {
 		String root = null;
 		String path = null;
 		String conf = null;
@@ -84,10 +126,6 @@ public class CppCodeFormatter extends CodeFormatter {
 		}
 
 		String clangFormat = getClangFormatPath();
-
-		IWorkbenchPage page = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
-		IEditorPart editor = page.getActiveEditor();
 
 		if (editor != null && editor instanceof ICEditor) {
 			ICEditor ceditor = (ICEditor) editor;
@@ -118,15 +156,17 @@ public class CppCodeFormatter extends CodeFormatter {
 		commands.add(clangFormat);
 		commands.add("-assume-filename=" + path);
 
-		for (IRegion region : regions) {
-			commands.add("-offset=" + region.getOffset());
-			commands.add("-length=" + region.getLength());
+		if (regions != null) {
+			for (IRegion region : regions) {
+				commands.add("-offset=" + region.getOffset());
+				commands.add("-length=" + region.getLength());
 
-			sb.append("-offset=");
-			sb.append(region.getOffset());
-			sb.append(" -length=");
-			sb.append(region.getLength());
-			sb.append(' ');
+				sb.append("-offset=");
+				sb.append(region.getOffset());
+				sb.append(" -length=");
+				sb.append(region.getLength());
+				sb.append(' ');
+			}
 		}
 
 		if (!formatArg.isEmpty()) {
@@ -389,6 +429,60 @@ public class CppCodeFormatter extends CodeFormatter {
 
 		if (!file.canExecute()) {
 			err.println("cpplint.py (" + cpplint + ") is not executable.");
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean enableClangFormatOnSave(IResource resource) {
+		boolean enable = CppStyle.getDefault().getPreferenceStore()
+				.getBoolean(CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE);
+
+		try {
+			IProject project = resource.getProject();
+			String enableProjectSpecific = project
+					.getPersistentProperty(new QualifiedName("",
+							CppStyleConstants.PROJECTS_PECIFIC_PROPERTY));
+
+			if (enableProjectSpecific != null
+					&& Boolean.parseBoolean(enableProjectSpecific)) {
+				String value = project.getPersistentProperty(new QualifiedName(
+						"", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
+				if (value != null) {
+					return Boolean.parseBoolean(value);
+				}
+
+				return false;
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
+		return enable;
+	}
+
+	public boolean runClangFormatOnSave(IResource resource) {
+		if (!enableClangFormatOnSave(resource)) {
+			return false;
+		}
+
+		String clangFormat = getCpplintPath();
+
+		if (clangFormat == null) {
+			err.println("clang-format is not specified.");
+			return false;
+		}
+
+		File file = new File(clangFormat);
+
+		if (!file.exists()) {
+			err.println("clang-format (" + clangFormat + ") does not exist.");
+			return false;
+		}
+
+		if (!file.canExecute()) {
+			err.println("clang-format (" + clangFormat + ") is not executable.");
 			return false;
 		}
 

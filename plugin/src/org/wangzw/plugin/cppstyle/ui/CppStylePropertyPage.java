@@ -20,9 +20,11 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 	private static final String PROJECTS_PECIFIC_TEXT = "Enable project specific settings";
 	private static final String ENABLE_CPPLINT_TEXT = "Enable cpplint on save";
+	private static final String ENABLE_CLANGFORMAT_TEXT = "Enable clang-format on save";
 
 	private Button projectSpecificButton;
 	private Button enableCpplintOnSaveButton;
+	private Button enableClangFormatOnSaveButton;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -50,14 +52,22 @@ public class CppStylePropertyPage extends PropertyPage implements
 		enableCpplintOnSaveButton.setText(ENABLE_CPPLINT_TEXT);
 		enableCpplintOnSaveButton.addSelectionListener(this);
 
+		enableClangFormatOnSaveButton = new Button(composite, SWT.CHECK);
+		enableClangFormatOnSaveButton.setText(ENABLE_CLANGFORMAT_TEXT);
+		enableClangFormatOnSaveButton.addSelectionListener(this);
+
 		if (!getPropertyValue(CppStyleConstants.PROJECTS_PECIFIC_PROPERTY)) {
 			projectSpecificButton.setSelection(false);
 			enableCpplintOnSaveButton.setEnabled(false);
+			enableClangFormatOnSaveButton.setEnabled(false);
 		} else {
 			projectSpecificButton.setSelection(true);
 			enableCpplintOnSaveButton.setEnabled(true);
 			enableCpplintOnSaveButton
 					.setSelection(getPropertyValue(CppStyleConstants.ENABLE_CPPLINT_PROPERTY));
+			enableClangFormatOnSaveButton.setEnabled(true);
+			enableClangFormatOnSaveButton
+					.setSelection(getPropertyValue(CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
 		}
 	}
 
@@ -94,6 +104,8 @@ public class CppStylePropertyPage extends PropertyPage implements
 		projectSpecificButton.setSelection(false);
 		enableCpplintOnSaveButton.setSelection(false);
 		enableCpplintOnSaveButton.setEnabled(false);
+		enableClangFormatOnSaveButton.setSelection(false);
+		enableClangFormatOnSaveButton.setEnabled(false);
 	}
 
 	public boolean performOk() {
@@ -106,6 +118,11 @@ public class CppStylePropertyPage extends PropertyPage implements
 			((IResource) getElement()).setPersistentProperty(new QualifiedName(
 					"", CppStyleConstants.ENABLE_CPPLINT_PROPERTY),
 					new Boolean(enableCpplintOnSaveButton.getSelection())
+							.toString());
+
+			((IResource) getElement()).setPersistentProperty(new QualifiedName(
+					"", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY),
+					new Boolean(enableClangFormatOnSaveButton.getSelection())
 							.toString());
 		} catch (CoreException e) {
 			return false;
@@ -133,6 +150,8 @@ public class CppStylePropertyPage extends PropertyPage implements
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() == projectSpecificButton) {
 			enableCpplintOnSaveButton.setEnabled(projectSpecificButton
+					.getSelection());
+			enableClangFormatOnSaveButton.setEnabled(projectSpecificButton
 					.getSelection());
 		}
 	}
