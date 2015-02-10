@@ -278,8 +278,8 @@ public class CppCodeFormatter extends CodeFormatter {
 
 		String pattern = CppStyleConstants.CPPLINT_OUTPUT_PATTERN;
 		Pattern p = Pattern.compile(pattern);
-		int lineNumGroup = CppStyleConstants.CPPLINT_PUTPUT_PATTERN_LINE_NO_GROUP;
-		int msgGroup = CppStyleConstants.CPPLINT_PUTPUT_PATTERN_MSG_GROUP;
+		int lineNumGroup = CppStyleConstants.CPPLINT_OUTPUT_PATTERN_LINE_NO_GROUP;
+		int msgGroup = CppStyleConstants.CPPLINT_OUTPUT_PATTERN_MSG_GROUP;
 
 		listener.setFile(file);
 

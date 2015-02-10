@@ -15,7 +15,7 @@ public class CppStyleConsolePatternMatchListener implements
 
 	private IFile file = null;
 	private Pattern pattern = null;
-	private int lineNumGroup = CppStyleConstants.CPPLINT_PUTPUT_PATTERN_LINE_NO_GROUP;
+	private int lineNumGroup = CppStyleConstants.CPPLINT_OUTPUT_PATTERN_LINE_NO_GROUP;
 	private String lineQualifier = Pattern
 			.quote(CppStyleConstants.CPPLINT_CONSOLE_ERROR_PREFIX);
 	private String patternMsg = lineQualifier
