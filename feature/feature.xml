@@ -38,14 +38,14 @@ SOFTWARE.
    </license>
 
    <url>
-      <discovery label="CppStyle" url="http://wangzw.github.io/CppStyle"/>
+      <update label="CppStyle" url="http://wangzw.github.io/CppStyle/update"/>
    </url>
 
    <plugin
          id="org.wangzw.cppstyle"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.1.0"
          unpack="false"/>
 
 </feature>
