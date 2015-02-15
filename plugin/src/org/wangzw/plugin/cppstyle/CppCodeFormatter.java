@@ -484,7 +484,7 @@ public class CppCodeFormatter extends CodeFormatter {
 			return false;
 		}
 
-		String clangFormat = getCpplintPath();
+		String clangFormat = getClangFormatPath();
 
 		showConsoleView();
 
