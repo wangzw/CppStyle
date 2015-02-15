@@ -42,7 +42,7 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 	 */
 	public void createFieldEditors() {
 		clangFormatPath = new FileFieldEditor(
-				CppStyleConstants.CLANG_FORMAT_PATH, "Chang-format path:",
+				CppStyleConstants.CLANG_FORMAT_PATH, "Clang-format path:",
 				getFieldEditorParent());
 
 		addField(clangFormatPath);
