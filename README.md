@@ -37,7 +37,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 ## Installation
 
-### Install from Eclipse Marketplace (Recommented)
+### Install from Eclipse Marketplace (Recommend)
 
 <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883" class="drag" title="Drag to your running Eclipse workspace to install CppStyle"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install CppStyle" /></a>
 
@@ -45,7 +45,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 [Go to Eclipse Marketplace page] (https://marketplace.eclipse.org/content/cppstyle) 
 
-### Install using update site
+### Install from update site
 
 CppStyle can be installed like other eclipse plugins from this site (case sensitive).
 
