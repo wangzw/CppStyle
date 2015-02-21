@@ -94,6 +94,10 @@ public class CppCodeFormatter extends CodeFormatter {
 				editor.getEditorInput());
 
 		TextEdit[] editors = format(doc.get(), editor, null);
+		
+		if (editors == null) {
+			return;
+		}
 
 		for (TextEdit e : editors) {
 			rootEdit.addChild(e);
