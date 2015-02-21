@@ -230,16 +230,28 @@ public class CppCodeFormatter extends CodeFormatter {
 			TextEdit[] retval = new TextEdit[1];
 
 			// skip the common prefix
-			int i = 0;
-			int minLength = Math.min(source.length(), newSource.length());
-			for (; i < minLength; i++) {
-				if (source.charAt(i) != newSource.charAt(i)) {
+			int start = 0, suffix = 0;
+			int lenSource = source.length();
+			int lenNewSource = newSource.length();
+			int minLength = Math.min(lenSource, lenNewSource);
+
+			for (; start < minLength; ++start) {
+				if (source.charAt(start) != newSource.charAt(start)) {
 					break;
 				}
 			}
 
-			retval[0] = new ReplaceEdit(i, source.length() - i,
-					newSource.substring(i));
+			// skip the common suffix
+			for (; suffix < minLength - start; ++suffix) {
+				if (source.charAt(lenSource - suffix - 1) != newSource
+						.charAt(lenNewSource - suffix - 1)) {
+					break;
+				}
+			}
+
+			retval[0] = new ReplaceEdit(start,
+					source.length() - start - suffix, newSource.substring(
+							start, lenNewSource - suffix));
 
 			return retval;
 
