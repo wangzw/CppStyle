@@ -1,1 +1,6 @@
+.project
+.classpath
+.DS_Store
+*.swp
+META-INF/
 target/
