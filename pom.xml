@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cppstyle-group</groupId>
 	<artifactId>cppstyle</artifactId>
-	<version>1.1.2-SNAPSHOT</version>
+	<version>1.1.3-kepler</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>plugin</module>
