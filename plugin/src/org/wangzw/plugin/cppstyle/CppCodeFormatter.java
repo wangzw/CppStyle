@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -94,7 +96,7 @@ public class CppCodeFormatter extends CodeFormatter {
 				editor.getEditorInput());
 
 		TextEdit[] editors = format(doc.get(), editor, null);
-		
+
 		if (editors == null) {
 			return;
 		}
@@ -310,11 +312,16 @@ public class CppCodeFormatter extends CodeFormatter {
 
 			String path = file.getLocation().toOSString();
 			String cpplint = getCpplintPath();
-			String root = file.getProject().getLocation().toOSString();
+			String projectRoot = file.getProject().getLocation().toOSString();
+			String root = getCpplintRoot(file);
 
 			List<String> commands = new ArrayList<String>();
 			commands.add(cpplint);
-			commands.add("--root=" + root);
+
+			if (root != null) {
+				commands.add("--root=" + root);
+			}
+
 			commands.add(path);
 
 			StringBuffer sb = new StringBuffer();
@@ -325,7 +332,7 @@ public class CppCodeFormatter extends CodeFormatter {
 			}
 
 			ProcessBuilder builder = new ProcessBuilder(commands);
-			builder.directory(new File(root));
+			builder.directory(new File(projectRoot));
 			builder.redirectErrorStream(true);
 			Process process = builder.start();
 
@@ -532,6 +539,56 @@ public class CppCodeFormatter extends CodeFormatter {
 	public static String getCpplintPath() {
 		return CppStyle.getDefault().getPreferenceStore()
 				.getString(CppStyleConstants.CPPLINT_PATH);
+	}
+
+	static String getVersionControlRoot(IFile file) {
+		File current = file.getLocation().toFile();
+
+		File dir = current.getParentFile();
+
+		while (dir != null) {
+			for (final File entry : dir.listFiles()) {
+				String name = entry.getName();
+				if (name.equals(".git") || name.equals(".hg")
+						|| name.equals(".svn")) {
+					return dir.getPath();
+				}
+			}
+
+			dir = dir.getParentFile();
+		}
+
+		return null;
+	}
+
+	public static String getCpplintRoot(IFile file) {
+		IProject project = file.getProject();
+		String rootSpec;
+		try {
+			rootSpec = project.getPersistentProperty(new QualifiedName("",
+					CppStyleConstants.CPPLINT_PROJECT_ROOT));
+
+			if (rootSpec.isEmpty()) {
+				return null;
+			}
+		} catch (CoreException e) {
+			return null;
+		}
+
+		String rootVc = getVersionControlRoot(file);
+
+		if (rootVc == null) {
+			return null;
+		}
+
+		String relative = new File(rootVc).toURI()
+				.relativize(new File(rootSpec).toURI()).getPath();
+
+		if (relative.endsWith("" + Path.SEPARATOR)) {
+			return relative.substring(0, relative.length() - 1);
+		}
+
+		return relative;
 	}
 
 	private void setupConsoleStream() {

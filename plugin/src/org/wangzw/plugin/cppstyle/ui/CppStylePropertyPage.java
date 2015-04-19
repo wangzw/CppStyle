@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -12,7 +13,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 public class CppStylePropertyPage extends PropertyPage implements
@@ -23,6 +26,8 @@ public class CppStylePropertyPage extends PropertyPage implements
 	private Button projectSpecificButton;
 	private Button enableCpplintOnSaveButton;
 	private Button enableClangFormatOnSaveButton;
+	private Text projectRoot;
+	private Button selectPath;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -38,21 +43,26 @@ public class CppStylePropertyPage extends PropertyPage implements
 		projectSpecificButton.setText(PROJECTS_PECIFIC_TEXT);
 		projectSpecificButton.addSelectionListener(this);
 
-		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		separator.setLayoutData(gridData);
+		createSepeerater(parent);
 
 		composite = createDefaultComposite(parent);
 
 		enableCpplintOnSaveButton = new Button(composite, SWT.CHECK);
-		enableCpplintOnSaveButton.setText(CppStyleConstants.ENABLE_CPPLINT_TEXT);
+		enableCpplintOnSaveButton
+				.setText(CppStyleConstants.ENABLE_CPPLINT_TEXT);
 		enableCpplintOnSaveButton.addSelectionListener(this);
 
 		enableClangFormatOnSaveButton = new Button(composite, SWT.CHECK);
-		enableClangFormatOnSaveButton.setText(CppStyleConstants.ENABLE_CLANGFORMAT_TEXT);
+		enableClangFormatOnSaveButton
+				.setText(CppStyleConstants.ENABLE_CLANGFORMAT_TEXT);
 		enableClangFormatOnSaveButton.addSelectionListener(this);
+
+		createSepeerater(composite);
+
+		Label laber = new Label(composite, SWT.NONE);
+		laber.setText(CppStyleConstants.PROJECT_ROOT_TEXT);
+
+		createProjectRootPathSelecter(composite);
 
 		if (!getPropertyValue(CppStyleConstants.PROJECTS_PECIFIC_PROPERTY)) {
 			projectSpecificButton.setSelection(false);
@@ -97,6 +107,49 @@ public class CppStylePropertyPage extends PropertyPage implements
 		return composite;
 	}
 
+	private void createSepeerater(Composite parent) {
+		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		separator.setLayoutData(gridData);
+	}
+
+	private void createProjectRootPathSelecter(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		composite.setLayout(layout);
+
+		GridData data = new GridData();
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		composite.setLayoutData(data);
+
+		Label separator = new Label(composite, SWT.NONE);
+		separator.setText("Root:");
+		
+		projectRoot = new Text(composite, SWT.LEFT | SWT.SINGLE | SWT.BORDER);
+		projectRoot
+				.setText(getPropertyValueString(CppStyleConstants.CPPLINT_PROJECT_ROOT));
+		projectRoot.addSelectionListener(this);
+		projectRoot.setEnabled(true);
+
+		selectPath = new Button(composite, SWT.NONE);
+		selectPath.setText("...");
+		selectPath.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent arg0) {
+				DirectoryDialog dlg = new DirectoryDialog(composite.getShell());
+				dlg.setText("Select project root directory for cpplint");
+				dlg.setMessage("Select project root directory for cpplint");
+				String dir = dlg.open();
+				if (dir != null) {
+					projectRoot.setText(dir);
+				}
+			}
+		});
+	}
+
 	protected void performDefaults() {
 		super.performDefaults();
 		projectSpecificButton.setSelection(false);
@@ -104,6 +157,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 		enableCpplintOnSaveButton.setEnabled(false);
 		enableClangFormatOnSaveButton.setSelection(false);
 		enableClangFormatOnSaveButton.setEnabled(false);
+		projectRoot.setText("");
 	}
 
 	public boolean performOk() {
@@ -122,26 +176,34 @@ public class CppStylePropertyPage extends PropertyPage implements
 					"", CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY),
 					new Boolean(enableClangFormatOnSaveButton.getSelection())
 							.toString());
+
+			((IResource) getElement()).setPersistentProperty(new QualifiedName(
+					"", CppStyleConstants.CPPLINT_PROJECT_ROOT), projectRoot
+					.getText());
 		} catch (CoreException e) {
 			return false;
 		}
 		return true;
 	}
 
-	public boolean getPropertyValue(String key) {
-		String enable;
+	public String getPropertyValueString(String key) {
+		String value;
 		try {
-			enable = ((IResource) getElement())
+			value = ((IResource) getElement())
 					.getPersistentProperty(new QualifiedName("", key));
-			if (enable == null) {
-				return false;
+			if (value == null) {
+				return "";
 			}
 
 		} catch (CoreException e) {
-			return false;
+			return "";
 		}
 
-		return Boolean.parseBoolean(enable);
+		return value;
+	}
+
+	public boolean getPropertyValue(String key) {
+		return Boolean.parseBoolean(getPropertyValueString(key));
 	}
 
 	@Override
