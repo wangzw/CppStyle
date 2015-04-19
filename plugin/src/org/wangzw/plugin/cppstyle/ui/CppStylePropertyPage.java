@@ -28,6 +28,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 	private Button enableClangFormatOnSaveButton;
 	private Text projectRoot;
 	private Button selectPath;
+	private Composite composite;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -116,7 +117,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 	}
 
 	private void createProjectRootPathSelecter(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
+		composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		composite.setLayout(layout);
