@@ -568,7 +568,7 @@ public class CppCodeFormatter extends CodeFormatter {
 			rootSpec = project.getPersistentProperty(new QualifiedName("",
 					CppStyleConstants.CPPLINT_PROJECT_ROOT));
 
-			if (rootSpec.isEmpty()) {
+			if (rootSpec == null || rootSpec.isEmpty()) {
 				return null;
 			}
 		} catch (CoreException e) {
