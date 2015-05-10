@@ -11,7 +11,7 @@ public class CppStyleConstants {
 
 	public static final String ENABLE_CPPLINT_TEXT = "Run cpplint on save";
 	public static final String ENABLE_CLANGFORMAT_TEXT = "Run clang-format on save";
-	public static final String PROJECT_ROOT_TEXT = "Select project root for cpplint (Use Eclipse project root directory by default if this is not set):";
+	public static final String PROJECT_ROOT_TEXT = "Select project root for cpplint (Use directory that contains .git, .hg, or .svn by default if this is not set):";
 
 	public static final String PROJECTS_PECIFIC_PROPERTY = "cppstyle.ENABLE_PROJECTS_PECIFIC";
 	public static final String ENABLE_CPPLINT_PROPERTY = "cppstyle.ENABLE_CPPLINT";
