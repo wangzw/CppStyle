@@ -34,16 +34,4 @@ public class CppStyleConsolePage extends TextConsolePage {
 		menuManager.remove(ActionFactory.PASTE.getId());
 	}
 
-	/**
-	 * Highlight next/previous error or error by console offset
-	 * 
-	 * @param position
-	 */
-	void moveToError(int position) {
-		if (console == null)
-			return;
-
-		System.err.println("position: " + position);
-	}
-
 }
