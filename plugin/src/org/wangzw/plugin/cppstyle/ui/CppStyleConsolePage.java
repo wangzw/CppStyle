@@ -8,7 +8,7 @@ import org.eclipse.ui.console.TextConsolePage;
 import org.eclipse.ui.console.TextConsoleViewer;
 
 public class CppStyleConsolePage extends TextConsolePage {
-	private CppStyleConsoleViewer view = null;
+	private CppStyleConsoleViewer viewer = null;
 	private CppStyleMessageConsole console = null;
 
 	public CppStyleConsolePage(CppStyleMessageConsole console, IConsoleView view) {
@@ -23,8 +23,8 @@ public class CppStyleConsolePage extends TextConsolePage {
 
 	@Override
 	protected TextConsoleViewer createViewer(Composite parent) {
-		view = new CppStyleConsoleViewer(parent, console);
-		return view;
+		viewer = new CppStyleConsoleViewer(parent, console);
+		return viewer;
 	}
 
 	@Override
