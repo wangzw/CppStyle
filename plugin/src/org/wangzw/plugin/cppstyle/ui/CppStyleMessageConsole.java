@@ -9,6 +9,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.IPageBookViewPage;
 
 public class CppStyleMessageConsole extends MessageConsole {
@@ -134,5 +135,17 @@ public class CppStyleMessageConsole extends MessageConsole {
 			return position;
 		}
 		return null;
+	}
+
+	public MessageConsoleStream newStdoutMessageStream() {
+		MessageConsoleStream out = new MessageConsoleStream(this);
+		out.setActivateOnWrite(page.activeOnStdout());
+		return out;
+	}
+
+	public MessageConsoleStream newStderrMessageStream() {
+		MessageConsoleStream out = new MessageConsoleStream(this);
+		out.setActivateOnWrite(page.activeOnStderr());
+		return out;
 	}
 }

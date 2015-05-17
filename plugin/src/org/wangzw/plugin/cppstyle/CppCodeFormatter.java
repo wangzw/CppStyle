@@ -602,11 +602,8 @@ public class CppCodeFormatter extends CodeFormatter {
 			conMan.addConsoles(new IConsole[] { console });
 		}
 
-		out = console.newMessageStream();
-		err = console.newMessageStream();
-
-		out.setActivateOnWrite(true);
-		err.setActivateOnWrite(true);
+		out = console.newStdoutMessageStream();
+		err = console.newStderrMessageStream();
 
 		err.setColor(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 	}
