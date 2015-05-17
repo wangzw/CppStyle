@@ -139,13 +139,13 @@ public class CppStyleMessageConsole extends MessageConsole {
 
 	public MessageConsoleStream newStdoutMessageStream() {
 		MessageConsoleStream out = new MessageConsoleStream(this);
-		out.setActivateOnWrite(page.activeOnStdout());
+		out.setActivateOnWrite(page != null ? page.activeOnStdout() : true);
 		return out;
 	}
 
 	public MessageConsoleStream newStderrMessageStream() {
 		MessageConsoleStream out = new MessageConsoleStream(this);
-		out.setActivateOnWrite(page.activeOnStderr());
+		out.setActivateOnWrite(page != null ? page.activeOnStderr() : true);
 		return out;
 	}
 }
