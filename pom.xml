@@ -20,9 +20,9 @@
 			<url>http://download.eclipse.org/releases/luna</url>
 		</repository>
 		<repository>
-			<id>cdt-8.5</id>
+			<id>cdt</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/cdt/releases/8.5</url>
+			<url>http://download.eclipse.org/tools/cdt/releases/8.6</url>
 		</repository>
 	</repositories>
 
