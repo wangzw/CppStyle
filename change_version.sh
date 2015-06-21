@@ -12,11 +12,11 @@ echo "change version from $OLD to $NEW"
 
 case "`uname -s`" in
     Darwin)
-        find $ROOT -name "*.xml" -or -name "*.MF" | xargs sed -i "" -e "s|$OLD|$NEW|"
+        find $ROOT -name "*.xml" -or -name "*.MF" | xargs sed -i "" -e "s|$OLD|$NEW|g"
     ;;
 
     *)
-        find $ROOT -name "*.xml" -or -name "*.MF" | xargs sed -i -e "s|$OLD|$NEW|"
+        find $ROOT -name "*.xml" -or -name "*.MF" | xargs sed -i -e "s|$OLD|$NEW|g"
     ;;
 esac
 
