@@ -37,6 +37,10 @@
             name="CppStyle"
             class="org.wangzw.plugin.cppstyle.ui.CppStylePropertyPage"
             id="org.wangzw.plugin.cppstyle.ui.CppStylePropertyPage">
+            <filter
+               name="projectNature"
+               value="org.eclipse.cdt.core.cnature">
+         	</filter>   
          <enabledWhen>
             <instanceof
                   value="org.eclipse.core.resources.IProject">
