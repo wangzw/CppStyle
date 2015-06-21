@@ -21,6 +21,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="CppStyle"
+            category="org.eclipse.cdt.ui.preferences.CPluginPreferencePage"
             class="org.wangzw.plugin.cppstyle.ui.CppStylePerfPage"
             id="org.wangzw.plugin.cppstyle.ui.CppStylePerfPage">
       </page>
