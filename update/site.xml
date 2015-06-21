@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.wangzw.cppstyle.feature_1.2.4.0.jar" id="org.wangzw.cppstyle.feature" version="1.2.4.0">
+   <feature url="features/org.wangzw.cppstyle.feature_1.2.5.0.jar" id="org.wangzw.cppstyle.feature" version="1.2.5.0">
       <category name="org.wangzw.cppstyle.category"/>
    </feature>
    <category-def name="org.wangzw.cppstyle.category" label="CppStyle"/>
