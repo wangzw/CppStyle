@@ -8,14 +8,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.IPreferencePage;
+import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -50,15 +57,23 @@ public class CppStylePropertyPage extends PropertyPage implements
 	}
 
 	private void constructPage(Composite parent) {
-		Composite composite = createComposite(parent);
+		Composite composite = createComposite(parent, 2);
 
 		projectSpecificButton = new Button(composite, SWT.CHECK);
 		projectSpecificButton.setText(PROJECTS_PECIFIC_TEXT);
 		projectSpecificButton.addSelectionListener(this);
 
+		Button perfSetting = new Button(composite, SWT.PUSH);
+		perfSetting.setText("Configure Workspace Settings...");
+		perfSetting.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				configureWorkspaceSettings();
+			}
+		});
+
 		createSepeerater(parent);
 
-		composite = createComposite(parent);
+		composite = createComposite(parent, 1);
 
 		enableCpplintOnSaveButton = new Button(composite, SWT.CHECK);
 		enableCpplintOnSaveButton
@@ -72,12 +87,12 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 		createSepeerater(parent);
 
-		composite = createComposite(parent);
+		composite = createComposite(parent, 1);
 
 		Label laber = new Label(composite, SWT.NONE);
 		laber.setText(CppStyleConstants.PROJECT_ROOT_TEXT);
 
-		composite = createComposite(composite);
+		composite = createComposite(composite, 1);
 
 		projectPath = getCurrentProject();
 
@@ -180,10 +195,10 @@ public class CppStylePropertyPage extends PropertyPage implements
 		return composite;
 	}
 
-	private Composite createComposite(Composite parent) {
+	private Composite createComposite(Composite parent, int ncols) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
+		layout.numColumns = ncols;
 		composite.setLayout(layout);
 
 		GridData data = new GridData(SWT.FILL);
@@ -257,6 +272,40 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 	public boolean getPropertyValue(String key) {
 		return Boolean.parseBoolean(getPropertyValueString(key));
+	}
+
+	/**
+	 * Creates a new preferences page and opens it
+	 */
+	public void configureWorkspaceSettings() {
+		// create a new instance of the current class
+		IPreferencePage page = new CppStylePerfPage();
+		page.setTitle(getTitle());
+		// and show it
+		showPreferencePage(CppStyleConstants.PerfPageId, page);
+	}
+
+	/**
+	 * Show a single preference pages
+	 * 
+	 * @param id
+	 *            - the preference page identification
+	 * @param page
+	 *            - the preference page
+	 */
+	protected void showPreferencePage(String id, IPreferencePage page) {
+		final IPreferenceNode targetNode = new PreferenceNode(id, page);
+		PreferenceManager manager = new PreferenceManager();
+		manager.addToRoot(targetNode);
+		final PreferenceDialog dialog = new PreferenceDialog(getControl()
+				.getShell(), manager);
+		BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
+			public void run() {
+				dialog.create();
+				dialog.setMessage(targetNode.getLabelText());
+				dialog.open();
+			}
+		});
 	}
 
 	@Override

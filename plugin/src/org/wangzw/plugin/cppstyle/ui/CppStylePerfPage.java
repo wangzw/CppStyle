@@ -114,7 +114,8 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 		if (!checkPathExist(newPath)) {
 			enableCpplintOnSave.setEnabled(false, getFieldEditorParent());
 			this.setValid(false);
-			this.setErrorMessage("Cpplint path \"" + newPath + "\" does not exist");
+			this.setErrorMessage("Cpplint path \"" + newPath
+					+ "\" does not exist");
 		} else {
 			enableCpplintOnSave.setEnabled(true, getFieldEditorParent());
 			this.setValid(true);

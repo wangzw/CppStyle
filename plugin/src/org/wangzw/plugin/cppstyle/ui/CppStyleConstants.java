@@ -4,6 +4,8 @@ package org.wangzw.plugin.cppstyle.ui;
  * Constant definitions for plug-in
  */
 public class CppStyleConstants {
+	public static final String PerfPageId = "org.wangzw.plugin.cppstyle.ui.CppStylePerfPage";
+
 	public static final String CLANG_FORMAT_PATH = "cppstyle.clangformat.path";
 	public static final String CPPLINT_PATH = "cppstyle.cpplint.path";
 	public static final String ENABLE_CPPLINT_ON_SAVE = "cppstyle.enable.cpplint.on.save";
