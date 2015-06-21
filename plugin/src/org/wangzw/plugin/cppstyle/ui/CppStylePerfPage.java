@@ -101,12 +101,12 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 		if (!checkPathExist(newPath)) {
 			enableClangFormatOnSave.setEnabled(false, getFieldEditorParent());
 			this.setValid(false);
-			this.setMessage("Clang-format path \"" + newPath
-					+ "\" does not exist", ERROR);
+			this.setErrorMessage("Clang-format path \"" + newPath
+					+ "\" does not exist");
 		} else {
 			enableClangFormatOnSave.setEnabled(true, getFieldEditorParent());
 			this.setValid(true);
-			this.setMessage(null, ERROR);
+			this.setErrorMessage(null);
 		}
 	}
 
@@ -114,12 +114,11 @@ public class CppStylePerfPage extends FieldEditorPreferencePage implements
 		if (!checkPathExist(newPath)) {
 			enableCpplintOnSave.setEnabled(false, getFieldEditorParent());
 			this.setValid(false);
-			this.setMessage("Cpplint path \"" + newPath + "\" does not exist",
-					ERROR);
+			this.setErrorMessage("Cpplint path \"" + newPath + "\" does not exist");
 		} else {
 			enableCpplintOnSave.setEnabled(true, getFieldEditorParent());
 			this.setValid(true);
-			this.setMessage(null, ERROR);
+			this.setErrorMessage(null);
 		}
 	}
 }

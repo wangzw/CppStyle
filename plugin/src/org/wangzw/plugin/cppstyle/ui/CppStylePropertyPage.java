@@ -1,11 +1,22 @@
 package org.wangzw.plugin.cppstyle.ui;
 
+import java.io.File;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -13,22 +24,24 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.ui.internal.Workbench;
+import org.wangzw.plugin.cppstyle.CppCodeFormatter;
 
 public class CppStylePropertyPage extends PropertyPage implements
-		SelectionListener {
+		SelectionListener, IPropertyChangeListener, ModifyListener {
 
 	private static final String PROJECTS_PECIFIC_TEXT = "Enable project specific settings";
 
 	private Button projectSpecificButton;
 	private Button enableCpplintOnSaveButton;
 	private Button enableClangFormatOnSaveButton;
-	private Text projectRoot;
-	private Button selectPath;
-	private Composite composite;
+	private DirectoryFieldEditor projectRoot;
+	private Text projectRootText = null;
+	String projectPath = null;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -38,7 +51,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 	}
 
 	private void constructPage(Composite parent) {
-		Composite composite = createDefaultComposite(parent);
+		Composite composite = createComposite(parent);
 
 		projectSpecificButton = new Button(composite, SWT.CHECK);
 		projectSpecificButton.setText(PROJECTS_PECIFIC_TEXT);
@@ -46,7 +59,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 		createSepeerater(parent);
 
-		composite = createDefaultComposite(parent);
+		composite = createComposite(parent);
 
 		enableCpplintOnSaveButton = new Button(composite, SWT.CHECK);
 		enableCpplintOnSaveButton
@@ -58,12 +71,60 @@ public class CppStylePropertyPage extends PropertyPage implements
 				.setText(CppStyleConstants.ENABLE_CLANGFORMAT_TEXT);
 		enableClangFormatOnSaveButton.addSelectionListener(this);
 
-		createSepeerater(composite);
+		createSepeerater(parent);
+
+		composite = createComposite(parent);
 
 		Label laber = new Label(composite, SWT.NONE);
 		laber.setText(CppStyleConstants.PROJECT_ROOT_TEXT);
 
-		createProjectRootPathSelecter(composite);
+		composite = createComposite(composite);
+
+		projectPath = getCurrentProject();
+
+		projectRoot = new DirectoryFieldEditor(CppStyleConstants.CPPLINT_PATH,
+				"Root:", composite) {
+			String errorMsg = super.getErrorMessage();
+
+			@Override
+			protected boolean doCheckState() {
+				this.setErrorMessage(errorMsg);
+
+				String fileName = getTextControl().getText();
+				fileName = fileName.trim();
+				if (fileName.length() == 0 && isEmptyStringAllowed()) {
+					return true;
+				}
+
+				File file = new File(fileName);
+				if (false == file.isDirectory()) {
+					return false;
+				}
+
+				this.setErrorMessage("Directory or its up level directories should contain .git, .hg, or .svn.");
+
+				String path = CppCodeFormatter.getVersionControlRoot(file);
+
+				if (path == null) {
+					return false;
+				}
+
+				if (!path.startsWith(projectPath)) {
+					this.setErrorMessage("Should be a subdirectory of project's root.");
+					return false;
+				}
+
+				return true;
+			}
+
+		};
+
+		projectRoot.setPage(this);
+		projectRoot.setFilterPath(new File(projectPath));
+		projectRoot.setPropertyChangeListener(this);
+		projectRootText = projectRoot.getTextControl(composite);
+		projectRootText.addModifyListener(this);
+		projectRoot.setEnabled(true, composite);
 
 		if (!getPropertyValue(CppStyleConstants.PROJECTS_PECIFIC_PROPERTY)) {
 			projectSpecificButton.setSelection(false);
@@ -78,6 +139,32 @@ public class CppStylePropertyPage extends PropertyPage implements
 			enableClangFormatOnSaveButton
 					.setSelection(getPropertyValue(CppStyleConstants.ENABLE_CLANGFORMAT_PROPERTY));
 		}
+
+		String root = getPropertyValueString(CppStyleConstants.CPPLINT_PROJECT_ROOT);
+		projectRoot.setStringValue(root);
+	}
+
+	public static String getCurrentProject() {
+		ISelectionService selectionService = Workbench.getInstance()
+				.getActiveWorkbenchWindow().getSelectionService();
+
+		ISelection selection = selectionService.getSelection();
+
+		IProject project = null;
+		if (selection instanceof IStructuredSelection) {
+			Object element = ((IStructuredSelection) selection)
+					.getFirstElement();
+
+			if (element instanceof IResource) {
+				project = ((IResource) element).getProject();
+			}
+		}
+
+		if (project != null) {
+			return project.getLocation().toOSString();
+		}
+
+		return null;
 	}
 
 	/**
@@ -87,22 +174,23 @@ public class CppStylePropertyPage extends PropertyPage implements
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
-		GridData data = new GridData(GridData.FILL);
+		GridData data = new GridData(SWT.FILL);
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 		constructPage(composite);
 		return composite;
 	}
 
-	private Composite createDefaultComposite(Composite parent) {
+	private Composite createComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		composite.setLayout(layout);
 
-		GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
+		GridData data = new GridData(SWT.FILL);
+		data.verticalAlignment = SWT.FILL;
+		data.horizontalAlignment = SWT.FILL;
+		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 
 		return composite;
@@ -111,44 +199,9 @@ public class CppStylePropertyPage extends PropertyPage implements
 	private void createSepeerater(Composite parent) {
 		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
 		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
+		gridData.horizontalAlignment = SWT.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		separator.setLayoutData(gridData);
-	}
-
-	private void createProjectRootPathSelecter(Composite parent) {
-		composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
-		composite.setLayout(layout);
-
-		GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		composite.setLayoutData(data);
-
-		Label separator = new Label(composite, SWT.NONE);
-		separator.setText("Root:");
-		
-		projectRoot = new Text(composite, SWT.LEFT | SWT.SINGLE | SWT.BORDER);
-		projectRoot
-				.setText(getPropertyValueString(CppStyleConstants.CPPLINT_PROJECT_ROOT));
-		projectRoot.addSelectionListener(this);
-		projectRoot.setEnabled(true);
-
-		selectPath = new Button(composite, SWT.NONE);
-		selectPath.setText("...");
-		selectPath.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent arg0) {
-				DirectoryDialog dlg = new DirectoryDialog(composite.getShell());
-				dlg.setText("Select project root directory for cpplint");
-				dlg.setMessage("Select project root directory for cpplint");
-				String dir = dlg.open();
-				if (dir != null) {
-					projectRoot.setText(dir);
-				}
-			}
-		});
 	}
 
 	protected void performDefaults() {
@@ -158,7 +211,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 		enableCpplintOnSaveButton.setEnabled(false);
 		enableClangFormatOnSaveButton.setSelection(false);
 		enableClangFormatOnSaveButton.setEnabled(false);
-		projectRoot.setText("");
+		projectRoot.setStringValue("");
 	}
 
 	public boolean performOk() {
@@ -180,7 +233,7 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 			((IResource) getElement()).setPersistentProperty(new QualifiedName(
 					"", CppStyleConstants.CPPLINT_PROJECT_ROOT), projectRoot
-					.getText());
+					.getStringValue());
 		} catch (CoreException e) {
 			return false;
 		}
@@ -222,4 +275,21 @@ public class CppStylePropertyPage extends PropertyPage implements
 		widgetSelected(e);
 	}
 
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if (event.getProperty().equals(FieldEditor.VALUE)) {
+			if (event.getSource() == projectRoot) {
+				setValid(projectRoot.isValid());
+			}
+		}
+	}
+
+	@Override
+	public void modifyText(ModifyEvent e) {
+		if (e.getSource() == projectRootText) {
+			if (projectRootText.getText().isEmpty()) {
+				setValid(true);
+			}
+		}
+	}
 }

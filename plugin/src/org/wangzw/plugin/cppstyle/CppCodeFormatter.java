@@ -313,7 +313,7 @@ public class CppCodeFormatter extends CodeFormatter {
 			List<String> commands = new ArrayList<String>();
 			commands.add(cpplint);
 
-			if (root != null) {
+			if (root != null && !root.isEmpty()) {
 				commands.add("--root=" + root);
 			}
 
@@ -536,6 +536,11 @@ public class CppCodeFormatter extends CodeFormatter {
 		File current = file.getLocation().toFile();
 
 		File dir = current.getParentFile();
+
+		return getVersionControlRoot(dir);
+	}
+
+	public static String getVersionControlRoot(File dir) {
 
 		while (dir != null) {
 			for (final File entry : dir.listFiles()) {
