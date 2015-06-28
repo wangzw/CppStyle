@@ -20,6 +20,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(CppStyleConstants.CPPLINT_PATH,
 				findBinaryPath("cpplint.py"));
 		store.setDefault(CppStyleConstants.ENABLE_CPPLINT_ON_SAVE, false);
+		store.setDefault(CppStyleConstants.ENABLE_CLANGFORMAT_ON_SAVE, false);
 	}
 
 	private String findBinaryPath(String bin) {
