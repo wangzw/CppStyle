@@ -37,7 +37,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 ## Installation
 
-### Install from Eclipse Marketplace (Recommend for Eclipse Luna)
+### Install from Eclipse Marketplace (Recommend for Eclipse Mars)
 
 <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883" class="drag" title="Drag to your running Eclipse workspace to install CppStyle"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install CppStyle" /></a>
 
@@ -49,7 +49,8 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 CppStyle can be installed like other eclipse plugins from this site.
 
-    http://www.cppstyle.com/update (Eclipse Luna)
+    http://www.cppstyle.com/update (Eclipse Mars)
+    http://www.cppstyle.com/luna (Eclipse Luna)
     http://www.cppstyle.com/kepler (Eclipse Kepler)
 
 Go to **Help -> Install New Software** page, click **Add** button and then enter a name (`CppStyle`) and the above URL, and then click **OK**.
