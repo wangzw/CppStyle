@@ -184,7 +184,6 @@ public class CppCodeFormatter extends CodeFormatter {
 
 		ProcessBuilder builder = new ProcessBuilder(commands);
 		builder.directory(new File(root));
-		builder.redirectErrorStream(true);
 
 		try {
 			Process process = builder.start();
@@ -199,9 +198,12 @@ public class CppCodeFormatter extends CodeFormatter {
 
 			InputStreamReader reader = new InputStreamReader(
 					process.getInputStream());
+			InputStreamReader error = new InputStreamReader(
+					process.getErrorStream());
 
 			final char[] buffer = new char[1024];
-			final StringBuilder out = new StringBuilder();
+			final StringBuilder stdout = new StringBuilder();
+			final StringBuilder errout = new StringBuilder();
 
 			for (;;) {
 				int rsz = reader.read(buffer, 0, buffer.length);
@@ -210,15 +212,30 @@ public class CppCodeFormatter extends CodeFormatter {
 					break;
 				}
 
-				out.append(buffer, 0, rsz);
+				stdout.append(buffer, 0, rsz);
+			}
+			
+			for (;;) {
+				int rsz = error.read(buffer, 0, buffer.length);
+
+				if (rsz < 0) {
+					break;
+				}
+
+				errout.append(buffer, 0, rsz);
 			}
 
-			String newSource = out.toString();
+			String newSource = stdout.toString();
 
 			int code = process.waitFor();
 			if (code != 0) {
 				err.println("clang-format return error (" + code + ").");
-				err.println(newSource);
+				err.println(errout.toString());
+				return null;
+			}
+
+			if (errout.length() > 0) {
+				err.println(errout.toString());
 				return null;
 			}
 
