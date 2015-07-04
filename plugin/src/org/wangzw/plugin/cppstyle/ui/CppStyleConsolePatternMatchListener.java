@@ -10,16 +10,12 @@ import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
-public class CppStyleConsolePatternMatchListener implements
-		IPatternMatchListener {
+public class CppStyleConsolePatternMatchListener implements IPatternMatchListener {
 
 	private IFile file = null;
 	private Pattern pattern = null;
 	private int lineNumGroup = CppStyleConstants.CPPLINT_OUTPUT_PATTERN_LINE_NO_GROUP;
-	private String lineQualifier = Pattern
-			.quote(CppStyleConstants.CPPLINT_CONSOLE_ERROR_PREFIX);
-	private String patternMsg = lineQualifier
-			+ CppStyleConstants.CPPLINT_OUTPUT_PATTERN;
+	private String patternMsg = CppStyleConstants.CPPLINT_OUTPUT_PATTERN;
 
 	public IFile getFile() {
 		return file;
@@ -50,17 +46,15 @@ public class CppStyleConsolePatternMatchListener implements
 
 	@Override
 	public String getLineQualifier() {
-		return lineQualifier;
+		return "\\n|\\r";
 	}
 
 	@Override
 	public void matchFound(PatternMatchEvent event) {
 		try {
-			CppStyleMessageConsole console = (CppStyleMessageConsole) event
-					.getSource();
+			CppStyleMessageConsole console = (CppStyleMessageConsole) event.getSource();
 
-			String line = console.getDocument().get(event.getOffset(),
-					event.getLength());
+			String line = console.getDocument().get(event.getOffset(), event.getLength());
 
 			Matcher m = pattern.matcher(line);
 			if (m.matches()) {
@@ -68,8 +62,7 @@ public class CppStyleConsolePatternMatchListener implements
 
 				int lineno = Integer.parseInt(ln);
 
-				FileLink link = new FileLink(file, null, -1, -1,
-						lineno == 0 ? 1 : lineno);
+				FileLink link = new FileLink(file, null, -1, -1, lineno == 0 ? 1 : lineno);
 				console.addFileLink(link, event.getOffset(), event.getLength());
 			}
 		} catch (BadLocationException e) {

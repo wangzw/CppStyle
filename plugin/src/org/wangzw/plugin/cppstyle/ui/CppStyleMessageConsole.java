@@ -5,6 +5,9 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IConsoleView;
@@ -14,6 +17,8 @@ import org.eclipse.ui.part.IPageBookViewPage;
 
 public class CppStyleMessageConsole extends MessageConsole {
 	private CppStyleConsolePage page = null;
+	private MessageConsoleStream out = new MessageConsoleStream(this);
+	private MessageConsoleStream err = new MessageConsoleStream(this);
 
 	private static class MarkerPosition extends Position {
 		private FileLink link = null;
@@ -36,6 +41,14 @@ public class CppStyleMessageConsole extends MessageConsole {
 		this.getDocument().addPositionCategory(ERROR_MARKER_CATEGORY);
 		this.listener = listener;
 		addPatternMatchListener(listener);
+
+		runUI(new Runnable() {
+
+			@Override
+			public void run() {
+				err.setColor(new Color(getStandardDisplay(), new RGB(255, 0, 0)));
+			};
+		});
 	}
 
 	@Override
@@ -62,8 +75,7 @@ public class CppStyleMessageConsole extends MessageConsole {
 		try {
 			IDocument document = getDocument();
 			if (document != null) {
-				Position[] positions = document
-						.getPositions(ERROR_MARKER_CATEGORY);
+				Position[] positions = document.getPositions(ERROR_MARKER_CATEGORY);
 				Position position = findPosition(offset, positions);
 				if (position instanceof MarkerPosition) {
 					return ((MarkerPosition) position).getFileLink();
@@ -79,8 +91,7 @@ public class CppStyleMessageConsole extends MessageConsole {
 		MarkerPosition linkPosition = new MarkerPosition(link, offset, length);
 		try {
 			document.addPosition(ERROR_MARKER_CATEGORY, linkPosition);
-			IConsoleManager fConsoleManager = ConsolePlugin.getDefault()
-					.getConsoleManager();
+			IConsoleManager fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
 			fConsoleManager.refresh(this);
 		} catch (BadPositionCategoryException e) {
 			e.printStackTrace();
@@ -130,22 +141,39 @@ public class CppStyleMessageConsole extends MessageConsole {
 		}
 
 		position = positions[left];
-		if (offset >= position.getOffset()
-				&& (offset < (position.getOffset() + position.getLength()))) {
+		if (offset >= position.getOffset() && (offset < (position.getOffset() + position.getLength()))) {
 			return position;
 		}
 		return null;
 	}
 
-	public MessageConsoleStream newStdoutMessageStream() {
-		MessageConsoleStream out = new MessageConsoleStream(this);
+	public MessageConsoleStream getOutputStream() {
 		out.setActivateOnWrite(page != null ? page.activeOnStdout() : true);
 		return out;
 	}
 
-	public MessageConsoleStream newStderrMessageStream() {
-		MessageConsoleStream out = new MessageConsoleStream(this);
-		out.setActivateOnWrite(page != null ? page.activeOnStderr() : true);
-		return out;
+	public MessageConsoleStream getErrorStream() {
+		err.setActivateOnWrite(page != null ? page.activeOnStderr() : true);
+		return err;
 	}
+
+	public static Display getStandardDisplay() {
+		Display display = Display.getCurrent();
+		if (display == null) {
+			display = Display.getDefault();
+		}
+		return display;
+	}
+
+	private void runUI(Runnable run) {
+		Display display;
+		display = Display.getCurrent();
+		if (display == null) {
+			display = Display.getDefault();
+			display.asyncExec(run);
+		} else {
+			run.run();
+		}
+	}
+
 }

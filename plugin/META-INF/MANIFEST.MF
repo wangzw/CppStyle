@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CppStyle
+Bundle-Name: org.wangzw.cppstyle
 Bundle-SymbolicName: org.wangzw.cppstyle;singleton:=true
 Bundle-Version: 1.3.0.0
 Bundle-Activator: org.wangzw.plugin.cppstyle.CppStyle
@@ -18,6 +18,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.debug.ui,
  org.eclipse.jface.text,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.eclipse.cdt.codan.core,
+ org.eclipse.cdt.codan.core.cxx,
+ org.eclipse.core.filesystem
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
