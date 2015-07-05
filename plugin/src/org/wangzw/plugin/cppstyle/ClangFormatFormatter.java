@@ -35,13 +35,11 @@ import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
 public class ClangFormatFormatter extends CodeFormatter {
-	private MessageConsoleStream out = null;
 	private MessageConsoleStream err = null;
 
 	public ClangFormatFormatter() {
 		super();
 		CppStyleMessageConsole console = CppStyle.buildConsole();
-		out = console.getOutputStream();
 		err = console.getErrorStream();
 	}
 
@@ -240,9 +238,9 @@ public class ClangFormatFormatter extends CodeFormatter {
 			return retval;
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			CppStyle.log("Failed to format code", e);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			CppStyle.log("Failed to format code", e);
 		}
 
 		return null;
@@ -307,7 +305,7 @@ public class ClangFormatFormatter extends CodeFormatter {
 				return false;
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			CppStyle.log(e);
 		}
 
 		return enable;
