@@ -49,7 +49,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 CppStyle can be installed like other eclipse plugins from this site.
 
-    http://www.cppstyle.com/update (Eclipse Mars)
+    http://www.cppstyle.com/mars (Eclipse Mars)
     http://www.cppstyle.com/luna (Eclipse Luna)
     http://www.cppstyle.com/kepler (Eclipse Kepler)
 
