@@ -12,7 +12,6 @@ import org.eclipse.cdt.codan.core.model.IProblemLocation;
 import org.eclipse.cdt.codan.core.model.IProblemLocationFactory;
 import org.eclipse.cdt.codan.core.model.IProblemWorkingCopy;
 import org.eclipse.cdt.codan.core.param.FileScopeProblemPreference;
-import org.eclipse.cdt.codan.core.param.LaunchModeProblemPreference;
 import org.eclipse.cdt.codan.core.param.MapProblemPreference;
 import org.eclipse.cdt.codan.core.param.RootProblemPreference;
 import org.eclipse.cdt.codan.core.param.SharedRootProblemPreference;
@@ -155,13 +154,8 @@ public class CpplintChecker extends AbstractCheckerWithProblemPreferences implem
 		value[4] = new Path("*.cuh");
 		scope.setAttribute(FileScopeProblemPreference.INCLUSION, value);
 
-		LaunchModeProblemPreference launch = getLaunchModePreference(problem);
-		launch.setRunningMode(CheckerLaunchMode.RUN_ON_FULL_BUILD, false);
-		launch.setRunningMode(CheckerLaunchMode.RUN_ON_INC_BUILD, false);
-		launch.setRunningMode(CheckerLaunchMode.RUN_ON_FILE_OPEN, false);
-		launch.setRunningMode(CheckerLaunchMode.RUN_ON_FILE_SAVE, true);
-		launch.setRunningMode(CheckerLaunchMode.RUN_AS_YOU_TYPE, false);
-		launch.setRunningMode(CheckerLaunchMode.RUN_ON_DEMAND, true);
+		getLaunchModePreference(problem).enableInLaunchModes(CheckerLaunchMode.RUN_ON_FILE_SAVE,
+				CheckerLaunchMode.RUN_ON_DEMAND);
 	}
 
 	@Override
