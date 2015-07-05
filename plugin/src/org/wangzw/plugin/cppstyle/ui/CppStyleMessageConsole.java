@@ -171,10 +171,21 @@ public class CppStyleMessageConsole extends MessageConsole {
 		display = Display.getCurrent();
 		if (display == null) {
 			display = Display.getDefault();
-			display.asyncExec(run);
+			display.syncExec(run);
 		} else {
 			run.run();
 		}
 	}
 
+	public void clear() {
+		runUI(new Runnable() {
+
+			@Override
+			public void run() {
+				IDocument document = getDocument();
+				document.set("");
+			};
+		});
+
+	}
 }

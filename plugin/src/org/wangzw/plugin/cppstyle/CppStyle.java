@@ -125,6 +125,7 @@ public class CppStyle extends AbstractUIPlugin {
 			conMan.addConsoles(new IConsole[] { console });
 		}
 
+		console.clear();
 		return console;
 	}
 }
