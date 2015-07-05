@@ -14,6 +14,7 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.IPageBookViewPage;
+import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStyleMessageConsole extends MessageConsole {
 	private CppStyleConsolePage page = null;
@@ -94,9 +95,9 @@ public class CppStyleMessageConsole extends MessageConsole {
 			IConsoleManager fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
 			fConsoleManager.refresh(this);
 		} catch (BadPositionCategoryException e) {
-			e.printStackTrace();
+			CppStyle.log(e);
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			CppStyle.log(e);
 		}
 	}
 

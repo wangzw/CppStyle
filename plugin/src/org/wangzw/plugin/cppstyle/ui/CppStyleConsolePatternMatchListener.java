@@ -9,6 +9,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
+import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStyleConsolePatternMatchListener implements IPatternMatchListener {
 
@@ -66,7 +67,7 @@ public class CppStyleConsolePatternMatchListener implements IPatternMatchListene
 				console.addFileLink(link, event.getOffset(), event.getLength());
 			}
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			CppStyle.log("Failed to add link", e);
 		}
 	}
 }

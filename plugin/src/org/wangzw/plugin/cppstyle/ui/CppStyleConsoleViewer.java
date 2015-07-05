@@ -103,7 +103,7 @@ public class CppStyleConsoleViewer extends TextConsoleViewer {
 				getDocument().removePosition(CppStyleMessageConsole.ERROR_MARKER_CATEGORY, position);
 			}
 		} catch (BadPositionCategoryException e) {
-			e.printStackTrace();
+			CppStyle.log(e);
 		}
 	}
 }
