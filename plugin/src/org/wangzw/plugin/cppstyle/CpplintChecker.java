@@ -11,6 +11,8 @@ import org.eclipse.cdt.codan.core.model.IProblem;
 import org.eclipse.cdt.codan.core.model.IProblemLocation;
 import org.eclipse.cdt.codan.core.model.IProblemLocationFactory;
 import org.eclipse.cdt.codan.core.model.IProblemWorkingCopy;
+import org.eclipse.cdt.codan.core.param.FileScopeProblemPreference;
+import org.eclipse.cdt.codan.core.param.LaunchModeProblemPreference;
 import org.eclipse.cdt.codan.core.param.MapProblemPreference;
 import org.eclipse.cdt.codan.core.param.RootProblemPreference;
 import org.eclipse.cdt.codan.core.param.SharedRootProblemPreference;
@@ -22,6 +24,7 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Path;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
@@ -54,9 +57,15 @@ public class CpplintChecker extends AbstractCheckerWithProblemPreferences implem
 
 	@Override
 	public boolean processResource(IResource resource) {
-		if (CpplintCheckSettings.checkCpplint(resource)) {
-			process(resource);
+		if (!shouldProduceProblems(resource)) {
+			return false;
 		}
+
+		if (!CpplintCheckSettings.checkCpplint(resource)) {
+			return false;
+		}
+
+		process(resource);
 		return false;
 	}
 
@@ -136,8 +145,23 @@ public class CpplintChecker extends AbstractCheckerWithProblemPreferences implem
 	@Override
 	public void initPreferences(IProblemWorkingCopy problem) {
 		getTopLevelPreference(problem); // initialize
-		getLaunchModePreference(problem).enableInLaunchModes(CheckerLaunchMode.RUN_ON_DEMAND,
-				CheckerLaunchMode.RUN_ON_FILE_SAVE);
+
+		FileScopeProblemPreference scope = getScopePreference(problem);
+		Path[] value = new Path[5];
+		value[0] = new Path("*.cc");
+		value[1] = new Path("*.h");
+		value[2] = new Path("*.cpp");
+		value[3] = new Path("*.cu");
+		value[4] = new Path("*.cuh");
+		scope.setAttribute(FileScopeProblemPreference.INCLUSION, value);
+
+		LaunchModeProblemPreference launch = getLaunchModePreference(problem);
+		launch.setRunningMode(CheckerLaunchMode.RUN_ON_FULL_BUILD, false);
+		launch.setRunningMode(CheckerLaunchMode.RUN_ON_INC_BUILD, false);
+		launch.setRunningMode(CheckerLaunchMode.RUN_ON_FILE_OPEN, false);
+		launch.setRunningMode(CheckerLaunchMode.RUN_ON_FILE_SAVE, true);
+		launch.setRunningMode(CheckerLaunchMode.RUN_AS_YOU_TYPE, false);
+		launch.setRunningMode(CheckerLaunchMode.RUN_ON_DEMAND, true);
 	}
 
 	@Override
