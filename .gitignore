@@ -6,3 +6,4 @@ META-INF/
 target/
 .settings/
 .metadata/
+.recommenders/
