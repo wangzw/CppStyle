@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.formatter.CodeFormatter;
+import org.eclipse.cdt.core.formatter.DefaultCodeFormatterConstants;
+import org.eclipse.cdt.core.model.CoreModel;
+import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.cdt.ui.ICEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -26,16 +30,14 @@ import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoManager;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
 public class ClangFormatFormatter extends CodeFormatter {
 	private MessageConsoleStream err = null;
+	private Map<String, ?> options;
 
 	public ClangFormatFormatter() {
 		super();
@@ -49,7 +51,30 @@ public class ClangFormatFormatter extends CodeFormatter {
 	}
 
 	@Override
-	public void setOptions(Map<String, ?> arg0) {
+	public void setOptions(Map<String, ?> options) {
+		if (options != null) {
+			this.options = options;
+		} else {
+			this.options = CCorePlugin.getOptions();
+		}
+	}
+
+	private String getSourceFilePath() {
+		ITranslationUnit tu = (ITranslationUnit) options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
+
+		if (tu == null) {
+			IFile file = (IFile) options.get(DefaultCodeFormatterConstants.FORMATTER_CURRENT_FILE);
+			if (file != null) {
+				tu = (ITranslationUnit) CoreModel.getDefault().create(file);
+			}
+		}
+
+		if (tu != null) {
+			return tu.getResource().getRawLocation().toOSString();
+		} else {
+			String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+			return new File(root, "a.cc").getAbsolutePath();
+		}
 	}
 
 	@Override
@@ -65,17 +90,15 @@ public class ClangFormatFormatter extends CodeFormatter {
 
 	@Override
 	public TextEdit[] format(int kind, String source, IRegion[] regions, String lineSeparator) {
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		IEditorPart editor = page.getActiveEditor();
-
-		return format(source, editor, regions);
+		return format(source, getSourceFilePath(), regions);
 	}
 
 	public void formatAndApply(ICEditor editor) {
 		TextEdit rootEdit = new MultiTextEdit();
 		IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 
-		TextEdit[] editors = format(doc.get(), editor, null);
+		String path = ((IFileEditorInput) editor.getEditorInput()).getFile().getLocation().toOSString();
+		TextEdit[] editors = format(doc.get(), path, null);
 
 		if (editors == null) {
 			return;
@@ -100,27 +123,16 @@ public class ClangFormatFormatter extends CodeFormatter {
 
 	}
 
-	private TextEdit[] format(String source, IEditorPart editor, IRegion[] regions) {
-		String root = null;
-		String path = null;
+	private TextEdit[] format(String source, String path, IRegion[] regions) {
 		String conf = null;
 		String formatArg = "";
+		String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
 
 		if (checkClangFormat() == false) {
 			return null;
 		}
 
 		String clangFormat = getClangFormatPath();
-
-		if (editor != null && editor instanceof ICEditor) {
-			ICEditor ceditor = (ICEditor) editor;
-			IFile file = ((IFileEditorInput) ceditor.getEditorInput()).getFile();
-			path = file.getLocation().toOSString();
-			root = file.getProject().getLocation().toOSString();
-		} else {
-			root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
-			path = new File(root, "a.cc").getAbsolutePath();
-		}
 
 		conf = getClangForamtConfigureFile(path);
 
