@@ -5,10 +5,10 @@
   <parent>
     <groupId>cppstyle-group</groupId>
     <artifactId>cppstyle</artifactId>
-    <version>1.4.0.0</version>
+    <version>1.4.0.1</version>
   </parent>
   <groupId>cppstyle-group</groupId>
   <artifactId>org.wangzw.cppstyle</artifactId>
-  <version>1.4.0.0</version>
+  <version>1.4.0.1</version>
   <packaging>eclipse-plugin</packaging>
 </project>
