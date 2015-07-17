@@ -5,10 +5,10 @@
   <parent>
     <groupId>cppstyle-group</groupId>
     <artifactId>cppstyle</artifactId>
-    <version>1.4.0.1</version>
+    <version>1.4.0.2</version>
   </parent>
   <groupId>cppstyle-group</groupId>
   <artifactId>update</artifactId>
-  <version>1.4.0.1</version>
+  <version>1.4.0.2</version>
   <packaging>eclipse-update-site</packaging>
 </project>
