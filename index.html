@@ -71,7 +71,7 @@ sudo ln -s /usr/bin/clang-format-3.4 /usr/bin/clang-format
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <h3>
-<a id="install-from-eclipse-marketplace-recommend-for-eclipse-luna" class="anchor" href="#install-from-eclipse-marketplace-recommend-for-eclipse-luna" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install from Eclipse Marketplace (Recommend for Eclipse Luna)</h3>
+<a id="install-from-eclipse-marketplace-recommend" class="anchor" href="#install-from-eclipse-marketplace-recommend" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install from Eclipse Marketplace (Recommend)</h3>
 
 <p><a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883" title="Drag to your running Eclipse workspace to install CppStyle"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install CppStyle"></a></p>
 
@@ -84,7 +84,8 @@ sudo ln -s /usr/bin/clang-format-3.4 /usr/bin/clang-format
 
 <p>CppStyle can be installed like other eclipse plugins from this site.</p>
 
-<pre><code>http://www.cppstyle.com/update (Eclipse Luna)
+<pre><code>http://www.cppstyle.com/mars (Eclipse Mars)
+http://www.cppstyle.com/luna (Eclipse Luna)
 http://www.cppstyle.com/kepler (Eclipse Kepler)
 </code></pre>
 
@@ -95,7 +96,7 @@ http://www.cppstyle.com/kepler (Eclipse Kepler)
 <h2>
 <a id="configure-cppstyle" class="anchor" href="#configure-cppstyle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure CppStyle</h2>
 
-<p>To configure CppStyle globally, go to <strong>Preferences -&gt; CppStyle</strong> dialog.</p>
+<p>To configure CppStyle globally, go to <strong>Preferences -&gt; C/C++ -&gt; CppStyle</strong> dialog.</p>
 
 <p>To configure CppSytle for a C/C++ project, go to <strong>Project properties -&gt; CppStyle</strong> dialog.</p>
 
@@ -124,7 +125,11 @@ http://www.cppstyle.com/kepler (Eclipse Kepler)
 <h2>
 <a id="to-configure-cpplintpy" class="anchor" href="#to-configure-cpplintpy" aria-hidden="true"><span class="octicon octicon-link"></span></a>To configure cpplint.py</h2>
 
-<p>CppStyle will pass <strong>--root=project_root_dir</strong> and source file's full absolute path to <code>cpplint.py</code> in the command line. And <code>cpplint.py</code> also supports per-directory configuration by the configuration file named <code>CPPLINT.cfg</code>.</p>
+<p>By default, if you enable <code>cpplint.py</code> in <strong>CppStyle</strong> page, <code>cpplint.py</code> will be triggered everytime when you save a file. You can also trigger <code>cpplint.py</code> by click the button <strong>Run C/C++ Code Analysis</strong> in the popup menu when you right click the file, directory or the entire project in <strong>Project Explorer</strong>.</p>
+
+<p>CppStyle will pass source file's full absolute path to <code>cpplint.py</code> in the command line. And <code>cpplint.py</code> also supports per-directory configuration by the configuration file named <code>CPPLINT.cfg</code>.</p>
+
+<p>If <strong>Root</strong> is set in project property page, <strong>--root=Root</strong> will pass to <code>cpplint.py</code>.</p>
 
 <p><code>CPPLINT.cfg</code> file can contain a number of key=value pairs.
     Currently the following options are supported:</p>
@@ -139,6 +144,22 @@ http://www.cppstyle.com/kepler (Eclipse Kepler)
 
 <pre><code>cpplint.py --help
 </code></pre>
+
+<h2>
+<a id="to-enable-or-disable-cpplintpy-on-specific-issues-or-files" class="anchor" href="#to-enable-or-disable-cpplintpy-on-specific-issues-or-files" aria-hidden="true"><span class="octicon octicon-link"></span></a>To enable or disable cpplint.py on specific issues or files</h2>
+
+<p>There are two ways to enable or disable cpplint.py on specific issues or files. The first and recommended one is to use configure file named <code>CPPLINT.cfg</code>. The benefit of using configure file is that it can be version controled and shared with others in a team. It also can produce the consistent result if you use <code>cpplint.py</code> in command line instead of CppStyle in Eclipse.</p>
+
+<pre><code>The "filter" option is similar in function to --filter flag. It specifies
+message filters in addition to the |_DEFAULT_FILTERS| and those specified
+through --filter command-line flag.
+
+"exclude_files" allows to specify a regular expression to be matched against
+a file name. If the expression matches, the file is skipped and not run
+through liner.
+</code></pre>
+
+<p>The other way is to configure <strong>Code Analysis</strong> in <strong>Perference -&gt; C/C++ -&gt; Code Analysis -&gt; Cpplint Issues</strong> globally, or in <strong>Project property -&gt; C/C++ General -&gt; Code Analysis -&gt; Cpplint Issues</strong> for a C/C++ project. Eclipse Mars has bug to prevent opening <strong>Code Analysis</strong> page in peoject's property.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/wangzw/CppStyle">CppStyle</a> is maintained by <a href="https://github.com/wangzw">wangzw</a>.</span>
