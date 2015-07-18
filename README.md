@@ -60,7 +60,7 @@ Select **CppStyle** from drop-down list and then check the name **CppStyle** lis
 
 ## Configure CppStyle
 
-To configure CppStyle globally, go to **Preferences -> CppStyle** dialog.
+To configure CppStyle globally, go to **Preferences -> C/C++ -> CppStyle** dialog.
 
 To configure CppSytle for a C/C++ project, go to **Project properties -> CppStyle** dialog.
 
@@ -86,7 +86,9 @@ To generate the clang-format configuration file **.clang-format**:
 
 ## To configure cpplint.py
 
-CppStyle will pass **--root=project_root_dir** and source file's full absolute path to `cpplint.py` in the command line. And `cpplint.py` also supports per-directory configuration by the configuration file named `CPPLINT.cfg`.
+CppStyle will pass source file's full absolute path to `cpplint.py` in the command line. And `cpplint.py` also supports per-directory configuration by the configuration file named `CPPLINT.cfg`.
+
+If **Root** is set in project property page, **--root=Root** will pass to `cpplint.py`.
 
 `CPPLINT.cfg` file can contain a number of key=value pairs.
     Currently the following options are supported:
