@@ -86,6 +86,8 @@ To generate the clang-format configuration file **.clang-format**:
 
 ## To configure cpplint.py
 
+By default, if you enable `cpplint.py` in **CppStyle** page, `cpplint.py` will be triggered everytime when you save a file. You can also trigger `cpplint.py` by click the button **Run C/C++ Code Analysis** in the popup menu when you right click the file, directory or the entire project in **Project Explorer**.
+
 CppStyle will pass source file's full absolute path to `cpplint.py` in the command line. And `cpplint.py` also supports per-directory configuration by the configuration file named `CPPLINT.cfg`.
 
 If **Root** is set in project property page, **--root=Root** will pass to `cpplint.py`.
@@ -115,4 +117,3 @@ There are two ways to enable or disable cpplint.py on specific issues or files. 
     through liner.
 
 The other way is to configure **Code Analysis** in **Perference -> C/C++ -> Code Analysis -> Cpplint Issues** globally, or in **Project property -> C/C++ General -> Code Analysis -> Cpplint Issues** for a C/C++ project. Eclipse Mars has bug to prevent opening **Code Analysis** page in peoject's property.
-
