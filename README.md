@@ -102,3 +102,17 @@ To get the details of these options you can run the command:
 
     cpplint.py --help
 
+## To enable or disable cpplint.py on specific issues or files
+
+There are two ways to enable or disable cpplint.py on specific issues or files. The first and recommended one is to use configure file named `CPPLINT.cfg`. The benefit of using configure file is that it can be version controled and shared with others in a team. It also can produce the consistent result if you use `cpplint.py` in command line instead of CppStyle in Eclipse.
+
+    The "filter" option is similar in function to --filter flag. It specifies
+    message filters in addition to the |_DEFAULT_FILTERS| and those specified
+    through --filter command-line flag.
+
+    "exclude_files" allows to specify a regular expression to be matched against
+    a file name. If the expression matches, the file is skipped and not run
+    through liner.
+
+The other way is to configure **Code Analysis** in **Perference -> C/C++ -> Code Analysis -> Cpplint Issues** globally, or in **Project property -> C/C++ General -> Code Analysis -> Cpplint Issues** for a C/C++ project. Eclipse Mars has bug to prevent opening **Code Analysis** page in peoject's property.
+
