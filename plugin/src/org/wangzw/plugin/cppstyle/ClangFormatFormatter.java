@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,14 +25,16 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.text.edits.DeleteEdit;
+import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.wangzw.plugin.cppstyle.diff_match_patch.Diff;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
 
@@ -223,31 +226,34 @@ public class ClangFormatFormatter extends CodeFormatter {
 				return null;
 			}
 
-			TextEdit[] retval = new TextEdit[1];
+			diff_match_patch diff = new diff_match_patch();
 
-			// skip the common prefix
-			int start = 0, suffix = 0;
-			int lenSource = source.length();
-			int lenNewSource = newSource.length();
-			int minLength = Math.min(lenSource, lenNewSource);
+			LinkedList<Diff> diffs = diff.diff_main(source, newSource);
+			diff.diff_cleanupEfficiency(diffs);
 
-			for (; start < minLength; ++start) {
-				if (source.charAt(start) != newSource.charAt(start)) {
+			int offset = 0;
+			MultiTextEdit edit = new MultiTextEdit();
+
+			for (Diff d : diffs) {
+				switch (d.operation) {
+				case INSERT:
+					InsertEdit e = new InsertEdit(offset, d.text);
+					edit.addChild(e);
+					break;
+				case DELETE:
+					DeleteEdit e1 = new DeleteEdit(offset, d.text.length());
+					offset += d.text.length();
+					edit.addChild(e1);
+					break;
+				case EQUAL:
+					offset += d.text.length();
 					break;
 				}
 			}
 
-			// skip the common suffix
-			for (; suffix < minLength - start; ++suffix) {
-				if (source.charAt(lenSource - suffix - 1) != newSource.charAt(lenNewSource - suffix - 1)) {
-					break;
-				}
-			}
-
-			retval[0] = new ReplaceEdit(start, source.length() - start - suffix,
-					newSource.substring(start, lenNewSource - suffix));
-
-			return retval;
+			TextEdit[] result = new TextEdit[1];
+			result[0] = edit;
+			return result;
 
 		} catch (IOException e) {
 			CppStyle.log("Failed to format code", e);
