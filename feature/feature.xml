@@ -38,7 +38,7 @@ SOFTWARE.
    </license>
 
    <url>
-      <update label="CppStyle" url="http://wangzw.github.io/CppStyle/update"/>
+      <update label="CppStyle" url="http://www.cppstyle.com/update"/>
    </url>
 
    <plugin
