@@ -82,40 +82,24 @@ public class ClangFormatFormatter extends CodeFormatter {
 
 	@Override
 	public TextEdit format(int kind, String source, int offset, int length, int arg4, String lineSeparator) {
-		TextEdit[] edits = format(kind, source, new IRegion[] { new Region(offset, length) }, lineSeparator);
-
-		if (edits != null) {
-			return edits[0];
-		}
-
-		return null;
-	}
-
-	@Override
-	public TextEdit[] format(int kind, String source, IRegion[] regions, String lineSeparator) {
-		return format(source, getSourceFilePath(), regions);
+		return format(source, getSourceFilePath(), new Region(offset, length));
 	}
 
 	public void formatAndApply(ICEditor editor) {
-		TextEdit rootEdit = new MultiTextEdit();
 		IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 
 		String path = ((IFileEditorInput) editor.getEditorInput()).getFile().getLocation().toOSString();
-		TextEdit[] editors = format(doc.get(), path, null);
+		TextEdit res = format(doc.get(), path, null);
 
-		if (editors == null) {
+		if (res == null) {
 			return;
-		}
-
-		for (TextEdit e : editors) {
-			rootEdit.addChild(e);
 		}
 
 		IDocumentUndoManager manager = DocumentUndoManagerRegistry.getDocumentUndoManager(doc);
 		manager.beginCompoundChange();
 
 		try {
-			rootEdit.apply(doc);
+			res.apply(doc);
 		} catch (MalformedTreeException e) {
 			CppStyle.log("Failed to apply change", e);
 		} catch (BadLocationException e) {
@@ -126,7 +110,7 @@ public class ClangFormatFormatter extends CodeFormatter {
 
 	}
 
-	private TextEdit[] format(String source, String path, IRegion[] regions) {
+	private TextEdit format(String source, String path, IRegion region) {
 		String conf = null;
 		String formatArg = "";
 		String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
@@ -152,17 +136,15 @@ public class ClangFormatFormatter extends CodeFormatter {
 		commands.add(clangFormat);
 		commands.add("-assume-filename=" + path);
 
-		if (regions != null) {
-			for (IRegion region : regions) {
-				commands.add("-offset=" + region.getOffset());
-				commands.add("-length=" + region.getLength());
+		if (region != null) {
+			commands.add("-offset=" + region.getOffset());
+			commands.add("-length=" + region.getLength());
 
-				sb.append("-offset=");
-				sb.append(region.getOffset());
-				sb.append(" -length=");
-				sb.append(region.getLength());
-				sb.append(' ');
-			}
+			sb.append("-offset=");
+			sb.append(region.getOffset());
+			sb.append(" -length=");
+			sb.append(region.getLength());
+			sb.append(' ');
 		}
 
 		if (!formatArg.isEmpty()) {
@@ -251,9 +233,7 @@ public class ClangFormatFormatter extends CodeFormatter {
 				}
 			}
 
-			TextEdit[] result = new TextEdit[1];
-			result[0] = edit;
-			return result;
+			return edit;
 
 		} catch (IOException e) {
 			CppStyle.log("Failed to format code", e);
