@@ -82,7 +82,8 @@ public class ClangFormatFormatter extends CodeFormatter {
 
 	@Override
 	public TextEdit format(int kind, String source, int offset, int length, int arg4, String lineSeparator) {
-		return format(source, getSourceFilePath(), new Region(offset, length));
+		TextEdit retval = format(source, getSourceFilePath(), new Region(offset, length));
+		return retval != null ? retval : new MultiTextEdit();
 	}
 
 	public void formatAndApply(ICEditor editor) {
