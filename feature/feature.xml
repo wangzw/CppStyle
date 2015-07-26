@@ -2,7 +2,7 @@
 <feature
       id="org.wangzw.cppstyle.feature"
       label="CppStyle"
-      version="1.4.0.5"
+      version="1.4.0.6"
       provider-name="Zhanwei Wang">
 
    <description>
@@ -45,7 +45,7 @@ SOFTWARE.
          id="org.wangzw.cppstyle"
          download-size="0"
          install-size="0"
-         version="1.4.0.5"
+         version="1.4.0.6"
          unpack="false"/>
 
 </feature>
