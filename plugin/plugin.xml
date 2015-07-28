@@ -53,16 +53,310 @@
          point="org.eclipse.cdt.core.CodeFormatter">
       <codeFormatter
             name="CppStyle (clang-format)"
-            class="org.wangzw.plugin.cppstyle.CppCodeFormatter"
+            class="org.wangzw.plugin.cppstyle.ClangFormatFormatter"
             id="org.wangzw.plugin.cppstyle.CppCodeFormatter">
       </codeFormatter>
    </extension>
+
    <extension
          id="org.wangzw.plugin.cppstyle.CpplintMarker"
-         name="Cpplint Error"
+         name="Cpplint Issue"
          point="org.eclipse.core.resources.markers">
-      <super type="org.eclipse.core.resources.problemmarker"/>
+      <super type="org.eclipse.cdt.codan.core.codanProblem"/>
       <attribute name="category"/>
       <persistent value="false"/>
+   </extension>
+
+   <extension
+         id="org.wangzw.plugin.cppstyle.parser"
+         name="Cpplint error parser"
+         point="org.eclipse.cdt.core.ErrorParser">
+    <errorparser class="org.wangzw.plugin.cppstyle.CpplintErrorParser"
+         id="org.wangzw.plugin.cppstyle.CpplintErrorParser"
+         name="Cpplint Parser">
+      <context type="codan" />
+    </errorparser>
+  </extension>
+  
+   <extension point="org.eclipse.cdt.codan.core.checkers">
+    <category id="org.wangzw.plugin.cppstyle.CpplintChecker.category" name="Cpplint Issues" />
+    <category id="org.wangzw.plugin.cppstyle.CpplintChecker.category.build" name="Build" 
+    		parentCategory = "org.wangzw.plugin.cppstyle.CpplintChecker.category"/>
+    <category id="org.wangzw.plugin.cppstyle.CpplintChecker.category.legal" name="Legal"
+    		parentCategory = "org.wangzw.plugin.cppstyle.CpplintChecker.category"/>
+    <category id="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability" name="Readability"
+    		parentCategory = "org.wangzw.plugin.cppstyle.CpplintChecker.category"/>
+    <category id="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime" name="Runtime"
+    		parentCategory = "org.wangzw.plugin.cppstyle.CpplintChecker.category"/>
+    <category id="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace" name="Whitespace"
+      		parentCategory = "org.wangzw.plugin.cppstyle.CpplintChecker.category"/>
+ 
+    <checker
+         class="org.wangzw.plugin.cppstyle.CpplintChecker"
+         id="org.wangzw.plugin.cppstyle.CpplintChecker"
+         name="CpplintChecker">  
+     <problem id="org.wangzw.plugin.cppstyle.cpplint.build.categorized" name="uncategorized"
+         defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+         markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+         category="org.wangzw.plugin.cppstyle.CpplintChecker.category"/>
+
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.c++11" name="c++11" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.deprecated" name="deprecated" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.endif_comment" name="endif_comment" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.explicit_make_pair" name="explicit_make_pair" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.forward_decl" name="forward_decl" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.header_guard" name="header_guard" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.include" name="include" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.include_alpha" name="include_alpha" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.include_order" name="include_order" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.include_what_you_use" name="include_what_you_use" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.namespaces" name="namespaces" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.printf_format" name="printf_format" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.build.storage_class" name="storage_class" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.build"/>
+        
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.legal.copyright" name="copyright" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.legal"/>
+
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.alt_tokens" name="alt_tokens" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.braces" name="braces" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.casting" name="casting" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.check" name="check" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.constructors" name="constructors" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.fn_size" name="fn_size" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.function" name="function" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.inheritance" name="inheritance" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.multiline_comment" name="multiline_comment" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.multiline_string" name="multiline_string" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.namespace" name="namespace" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.nolint" name="nolint" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.nul" name="nul" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.strings" name="strings" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.todo" name="todo" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.readability.utf8" name="utf8" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.readability"/>
+
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.arrays" name="arrays" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.casting" name="casting" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.explicit" name="explicit" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.int" name="int" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.init" name="init" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.invalid_increment" name="invalid_increment" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.member_string_references" name="member_string_references" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.memset" name="memset" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.indentation_namespace" name="indentation_namespace" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.operator" name="operator" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.printf" name="printf" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.printf_format" name="printf_format" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.references" name="references" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.string" name="string" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.threadsafe_fn" name="threadsafe_fn" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.runtime.vlog" name="vlog" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.runtime"/>
+
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.blank_line" name="blank_line" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.braces" name="braces" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.comma" name="comma" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.comments" name="comments" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.empty_conditional_body" name="empty_conditional_body" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.empty_loop_body" name="empty_loop_body" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.end_of_line" name="end_of_line" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.ending_newline" name="ending_newline" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.forcolon" name="forcolon" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.indent" name="indent" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.line_length" name="line_length" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.newline" name="newline" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.operators" name="operators" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.parens" name="parens" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.semicolon" name="semicolon" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.tab" name="tab" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+      <problem id="org.wangzw.plugin.cppstyle.cpplint.whitespace.todo" name="todo" 
+        defaultEnabled="true" defaultSeverity="Error" messagePattern="{0}"
+        markerType="org.wangzw.plugin.cppstyle.CpplintMarker"
+        category="org.wangzw.plugin.cppstyle.CpplintChecker.category.whitespace"/>
+     
+    </checker>
    </extension>
 </plugin>

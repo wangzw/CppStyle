@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.TextConsoleViewer;
+import org.wangzw.plugin.cppstyle.CppStyle;
 
 public class CppStyleConsoleViewer extends TextConsoleViewer {
 	private CppStyleMessageConsole console = null;
@@ -27,8 +28,7 @@ public class CppStyleConsoleViewer extends TextConsoleViewer {
 		}
 	};
 
-	public CppStyleConsoleViewer(Composite parent,
-			CppStyleMessageConsole console) {
+	public CppStyleConsoleViewer(Composite parent, CppStyleMessageConsole console) {
 		super(parent, console);
 		this.console = console;
 		this.getDocument().addDocumentListener(documentListener);
@@ -97,15 +97,13 @@ public class CppStyleConsoleViewer extends TextConsoleViewer {
 
 	public void clearFileLink() {
 		try {
-			Position[] positions = getDocument().getPositions(
-					CppStyleMessageConsole.ERROR_MARKER_CATEGORY);
+			Position[] positions = getDocument().getPositions(CppStyleMessageConsole.ERROR_MARKER_CATEGORY);
 
 			for (Position position : positions) {
-				getDocument().removePosition(
-						CppStyleMessageConsole.ERROR_MARKER_CATEGORY, position);
+				getDocument().removePosition(CppStyleMessageConsole.ERROR_MARKER_CATEGORY, position);
 			}
 		} catch (BadPositionCategoryException e) {
-			e.printStackTrace();
+			CppStyle.log(e);
 		}
 	}
 }

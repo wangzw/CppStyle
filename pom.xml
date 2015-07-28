@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cppstyle-group</groupId>
 	<artifactId>cppstyle</artifactId>
-	<version>1.2.5.0</version>
+	<version>1.2.6.0</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>plugin</module>
@@ -15,7 +15,7 @@
 
 	<repositories>
 		<repository>
-			<id>eclipse-luna</id>
+			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/releases/luna</url>
 		</repository>

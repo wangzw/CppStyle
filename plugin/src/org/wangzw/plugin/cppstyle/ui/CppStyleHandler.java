@@ -17,7 +17,7 @@ import org.eclipse.ui.internal.InternalHandlerUtil;
 import org.eclipse.ui.internal.SaveableHelper;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.internal.handlers.AbstractSaveHandler;
-import org.wangzw.plugin.cppstyle.CppCodeFormatter;
+import org.wangzw.plugin.cppstyle.ClangFormatFormatter;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -62,7 +62,7 @@ public class CppStyleHandler extends AbstractSaveHandler {
 
 		IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
 
-		CppCodeFormatter formater = new CppCodeFormatter();
+		ClangFormatFormatter formater = new ClangFormatFormatter();
 
 		if (formater.runClangFormatOnSave(file)) {
 			formater.formatAndApply(editor);
@@ -71,20 +71,13 @@ public class CppStyleHandler extends AbstractSaveHandler {
 		IWorkbenchPage page = editor.getSite().getPage();
 		page.saveEditor(editor, false);
 
-		formater.deleteAllMarkers(file);
-
-		if (formater.runCpplintOnSave(file)) {
-			formater.checkFileFormat(file);
-		}
-
 		return null;
 	}
 
 	@Override
 	protected EvaluationResult evaluate(IEvaluationContext context) {
 
-		IWorkbenchWindow window = InternalHandlerUtil
-				.getActiveWorkbenchWindow(context);
+		IWorkbenchWindow window = InternalHandlerUtil.getActiveWorkbenchWindow(context);
 		// no window? not active
 		if (window == null)
 			return EvaluationResult.FALSE;

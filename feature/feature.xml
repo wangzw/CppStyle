@@ -2,7 +2,7 @@
 <feature
       id="org.wangzw.cppstyle.feature"
       label="CppStyle"
-      version="1.2.5.0"
+      version="1.2.6.0"
       provider-name="Zhanwei Wang">
 
    <description>
@@ -38,14 +38,14 @@ SOFTWARE.
    </license>
 
    <url>
-      <update label="CppStyle" url="http://wangzw.github.io/CppStyle/update"/>
+      <update label="CppStyle" url="http://www.cppstyle.com/luna"/>
    </url>
 
    <plugin
          id="org.wangzw.cppstyle"
          download-size="0"
          install-size="0"
-         version="1.2.5.0"
+         version="1.2.6.0"
          unpack="false"/>
 
 </feature>

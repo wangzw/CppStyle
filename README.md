@@ -37,7 +37,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 ## Installation
 
-### Install from Eclipse Marketplace (Recommend for Eclipse Luna)
+### Install from Eclipse Marketplace (Recommend)
 
 <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2192883" class="drag" title="Drag to your running Eclipse workspace to install CppStyle"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install CppStyle" /></a>
 
@@ -49,7 +49,8 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 CppStyle can be installed like other eclipse plugins from this site.
 
-    http://www.cppstyle.com/update (Eclipse Luna)
+    http://www.cppstyle.com/mars (Eclipse Mars)
+    http://www.cppstyle.com/luna (Eclipse Luna)
     http://www.cppstyle.com/kepler (Eclipse Kepler)
 
 Go to **Help -> Install New Software** page, click **Add** button and then enter a name (`CppStyle`) and the above URL, and then click **OK**.
@@ -59,7 +60,7 @@ Select **CppStyle** from drop-down list and then check the name **CppStyle** lis
 
 ## Configure CppStyle
 
-To configure CppStyle globally, go to **Preferences -> CppStyle** dialog.
+To configure CppStyle globally, go to **Preferences -> C/C++ -> CppStyle** dialog.
 
 To configure CppSytle for a C/C++ project, go to **Project properties -> CppStyle** dialog.
 
@@ -85,7 +86,11 @@ To generate the clang-format configuration file **.clang-format**:
 
 ## To configure cpplint.py
 
-CppStyle will pass **--root=project_root_dir** and source file's full absolute path to `cpplint.py` in the command line. And `cpplint.py` also supports per-directory configuration by the configuration file named `CPPLINT.cfg`.
+By default, if you enable `cpplint.py` in **CppStyle** page, `cpplint.py` will be triggered everytime when you save a file. You can also trigger `cpplint.py` by click the button **Run C/C++ Code Analysis** in the popup menu when you right click the file, directory or the entire project in **Project Explorer**.
+
+CppStyle will pass source file's full absolute path to `cpplint.py` in the command line. And `cpplint.py` also supports per-directory configuration by the configuration file named `CPPLINT.cfg`.
+
+If **Root** is set in project property page, **--root=Root** will pass to `cpplint.py`.
 
 `CPPLINT.cfg` file can contain a number of key=value pairs.
     Currently the following options are supported:
@@ -99,3 +104,16 @@ To get the details of these options you can run the command:
 
     cpplint.py --help
 
+## To enable or disable cpplint.py on specific issues or files
+
+There are two ways to enable or disable cpplint.py on specific issues or files. The first and recommended one is to use configure file named `CPPLINT.cfg`. The benefit of using configure file is that it can be version controled and shared with others in a team. It also can produce the consistent result if you use `cpplint.py` in command line instead of CppStyle in Eclipse.
+
+    The "filter" option is similar in function to --filter flag. It specifies
+    message filters in addition to the |_DEFAULT_FILTERS| and those specified
+    through --filter command-line flag.
+
+    "exclude_files" allows to specify a regular expression to be matched against
+    a file name. If the expression matches, the file is skipped and not run
+    through liner.
+
+The other way is to configure **Code Analysis** in **Perference -> C/C++ -> Code Analysis -> Cpplint Issues** globally, or in **Project property -> C/C++ General -> Code Analysis -> Cpplint Issues** for a C/C++ project. Eclipse Mars has bug to prevent opening **Code Analysis** page in peoject's property.
