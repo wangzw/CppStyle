@@ -145,14 +145,14 @@ public class CpplintChecker extends AbstractCheckerWithProblemPreferences implem
 	public void initPreferences(IProblemWorkingCopy problem) {
 		getTopLevelPreference(problem); // initialize
 
-		FileScopeProblemPreference scope = getScopePreference(problem);
-		Path[] value = new Path[5];
-		value[0] = new Path("*.cc");
-		value[1] = new Path("*.h");
-		value[2] = new Path("*.cpp");
-		value[3] = new Path("*.cu");
-		value[4] = new Path("*.cuh");
-		scope.setAttribute(FileScopeProblemPreference.INCLUSION, value);
+//		FileScopeProblemPreference scope = getScopePreference(problem);
+//		Path[] value = new Path[5];
+//		value[0] = new Path("*.cc");
+//		value[1] = new Path("*.h");
+//		value[2] = new Path("*.cpp");
+//		value[3] = new Path("*.cu");
+//		value[4] = new Path("*.cuh");
+//		scope.setAttribute(FileScopeProblemPreference.INCLUSION, value);
 
 		getLaunchModePreference(problem).enableInLaunchModes(CheckerLaunchMode.RUN_ON_FILE_SAVE,
 				CheckerLaunchMode.RUN_ON_DEMAND);
