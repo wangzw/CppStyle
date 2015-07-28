@@ -25,6 +25,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     rm -rf $SITE_DIR
     mkdir -p $SITE_DIR
     cd $SITE_DIR
+    cp ../site-index.html index.html
     rsync -rv --exclude=.git  ../../$OUTPUT_FOLDER/* .
 
     #add, commit and push files
