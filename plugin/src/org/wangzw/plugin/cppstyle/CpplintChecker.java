@@ -1,6 +1,7 @@
 package org.wangzw.plugin.cppstyle;
 
 import java.net.URI;
+import java.util.regex.Pattern;
 
 import org.eclipse.cdt.codan.core.CodanRuntime;
 import org.eclipse.cdt.codan.core.cxx.externaltool.ArgsSeparator;
@@ -32,6 +33,7 @@ public class CpplintChecker extends AbstractCheckerWithProblemPreferences implem
 	private final CpplintCheckSettings settings;
 	private final CpplintInvoker invoker;
 	private final RootProblemPreference preferences;
+	private final Pattern cppflies = Pattern.compile("cpp|cc|h|hpp|cu|cuh");
 
 	/**
 	 * Constructor.
@@ -61,6 +63,12 @@ public class CpplintChecker extends AbstractCheckerWithProblemPreferences implem
 		}
 
 		if (!CpplintCheckSettings.checkCpplint(resource)) {
+			return false;
+		}
+
+		String ext = resource.getLocation().getFileExtension();
+
+		if (ext == null || !cppflies.matcher(ext).matches()) {
 			return false;
 		}
 
@@ -144,15 +152,6 @@ public class CpplintChecker extends AbstractCheckerWithProblemPreferences implem
 	@Override
 	public void initPreferences(IProblemWorkingCopy problem) {
 		getTopLevelPreference(problem); // initialize
-
-//		FileScopeProblemPreference scope = getScopePreference(problem);
-//		Path[] value = new Path[5];
-//		value[0] = new Path("*.cc");
-//		value[1] = new Path("*.h");
-//		value[2] = new Path("*.cpp");
-//		value[3] = new Path("*.cu");
-//		value[4] = new Path("*.cuh");
-//		scope.setAttribute(FileScopeProblemPreference.INCLUSION, value);
 
 		getLaunchModePreference(problem).enableInLaunchModes(CheckerLaunchMode.RUN_ON_FILE_SAVE,
 				CheckerLaunchMode.RUN_ON_DEMAND);
