@@ -116,4 +116,4 @@ There are two ways to enable or disable cpplint.py on specific issues or files. 
     a file name. If the expression matches, the file is skipped and not run
     through liner.
 
-The other way is to configure **Code Analysis** in **Perference -> C/C++ -> Code Analysis -> Cpplint Issues** globally, or in **Project property -> C/C++ General -> Code Analysis -> Cpplint Issues** for a C/C++ project. Eclipse Mars has bug to prevent opening **Code Analysis** page in peoject's property.
+The other way is to configure **Code Analysis** in **Perference -> C/C++ -> Code Analysis -> Cpplint Issues** globally, or in **Project property -> C/C++ General -> Code Analysis -> Cpplint Issues** for a C/C++ project. Eclipse Mars has [bug](https://bugs.eclipse.org/bugs/show_bug.cgi?id=471967) to prevent opening **Code Analysis** page in peoject's property.
