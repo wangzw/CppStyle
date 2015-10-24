@@ -22,7 +22,7 @@
 		<repository>
 			<id>cdt</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/cdt/releases/8.7</url>
+			<url>http://download.eclipse.org/tools/cdt/releases/8.8</url>
 		</repository>
 	</repositories>
 
