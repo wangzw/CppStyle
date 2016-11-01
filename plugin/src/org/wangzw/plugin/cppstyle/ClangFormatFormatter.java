@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -112,30 +113,28 @@ public class ClangFormatFormatter extends CodeFormatter {
 	}
 
 	private TextEdit format(String source, String path, IRegion region) {
-		String conf = null;
-		String formatArg = "";
-		String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
-
-		if (checkClangFormat() == false) {
+		String clangFormatPath = getClangFormatPath();
+		if (checkClangFormat(clangFormatPath) == false) {
 			return null;
 		}
 
-		String clangFormat = getClangFormatPath();
-
-		conf = getClangForamtConfigureFile(path);
-
-		if (conf == null) {
-			err.println("Cannot find clang-format configure file under any level parent directories of path (" + path
-					+ ").");
-			err.println("Run clang-format with Google style by default.");
-			formatArg = "-style=Google";
+		String confPath = getClangFormatConfigureFile(path);
+		if (confPath == null) {
+			err.println(
+					"Cannot find .clang-format or _clang-format configuration file under any level "
+							+ "parent directories of path (" + path + ").");
+			err.println("Clang-format will default to Google style.");
 		}
 
-		StringBuffer sb = new StringBuffer();
+		// make clang-format do its own search for the configuration, but fall back to Google.
+		String stdArg = "-style=file";
+		String fallbackArg = "-fallback-style=Google";
 
-		List<String> commands = new ArrayList<String>();
-		commands.add(clangFormat);
-		commands.add("-assume-filename=" + path);
+		ArrayList<String> commands = new ArrayList<String>(
+				Arrays.asList(clangFormatPath, "-assume-filename=" + path, stdArg, fallbackArg));
+
+		StringBuffer sb = new StringBuffer();
+		sb.append(stdArg + " " + fallbackArg + " ");
 
 		if (region != null) {
 			commands.add("-offset=" + region.getOffset());
@@ -148,12 +147,9 @@ public class ClangFormatFormatter extends CodeFormatter {
 			sb.append(' ');
 		}
 
-		if (!formatArg.isEmpty()) {
-			sb.append(formatArg);
-			commands.add(formatArg);
-		}
-
 		ProcessBuilder builder = new ProcessBuilder(commands);
+
+		String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
 		builder.directory(new File(root));
 
 		try {
@@ -245,26 +241,30 @@ public class ClangFormatFormatter extends CodeFormatter {
 		return null;
 	}
 
-	private String getClangForamtConfigureFile(String path) {
+	private String getClangFormatConfigureFile(String path) {
 		File file = new File(path);
 
 		while (file != null) {
 			File dir = file.getParentFile();
+			if (dir != null) {
+				File conf = new File(dir, ".clang-format");
+				if (conf.exists()) {
+					return conf.getAbsolutePath();
+				}
 
-			File conf = new File(dir, ".clang-format");
-			if (dir != null && conf.exists()) {
-				return conf.getAbsolutePath();
-			} else {
-				file = dir;
+				conf = new File(dir, "_clang-format");
+				if (conf.exists()) {
+					return conf.getAbsolutePath();
+				}
 			}
+
+			file = dir;
 		}
 
 		return null;
 	}
 
-	public boolean checkClangFormat() {
-		String clangformat = getClangFormatPath();
-
+	public boolean checkClangFormat(String clangformat) {
 		if (clangformat == null) {
 			err.println("clang-format is not specified.");
 			return false;
@@ -318,7 +318,7 @@ public class ClangFormatFormatter extends CodeFormatter {
 		String clangFormat = getClangFormatPath();
 
 		if (clangFormat == null) {
-			err.println("clang-format is not specified.");
+			err.println("clang-format command must be specified in preferences.");
 			return false;
 		}
 
