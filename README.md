@@ -15,12 +15,12 @@ There are many C/C++ code format tools such as "[astyle](http://astyle.sourcefor
 **[cpplint.py](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#cpplint)** is a C++ coding style checker provided by google. It can be used to check the C++ code against the [Google C++ coding style](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html). It can detect many style errors and maintain the consistency of coding style.
 
 ## Requirement
-    cpplint.py     http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#cpplint
+    cpplint.py     https://google.github.io/styleguide/cppguide.html#cpplint
     clang-format   http://clang.llvm.org/docs/ClangFormat.html
 
 ### Install cpplint.py on Linux/MacOS
 
-    sudo curl -L "http://google-styleguide.googlecode.com/svn/trunk/cpplint/cpplint.py" -o /usr/bin/cpplint.py
+    sudo curl -L "https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py" -o /usr/bin/cpplint.py
     sudo chmod a+x /usr/bin/cpplint.py
 
 ### Install clang-format on Linux/MacOS
