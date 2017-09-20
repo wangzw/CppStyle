@@ -7,8 +7,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.formatter.CodeFormatter;
@@ -16,11 +16,13 @@ import org.eclipse.cdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.cdt.ui.ICEditor;
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -35,9 +37,17 @@ import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IURIEditorInput;
+import org.eclipse.ui.editors.text.ILocationProvider;
+
 import org.wangzw.plugin.cppstyle.diff_match_patch.Diff;
 import org.wangzw.plugin.cppstyle.ui.CppStyleConstants;
 import org.wangzw.plugin.cppstyle.ui.CppStyleMessageConsole;
+
 
 public class ClangFormatFormatter extends CodeFormatter {
 	private MessageConsoleStream err = null;
@@ -64,6 +74,20 @@ public class ClangFormatFormatter extends CodeFormatter {
 	}
 
 	private String getSourceFilePath() {
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		if (page != null) {
+			IEditorPart activeEditor = page.getActiveEditor();
+			if (activeEditor != null) {
+				IEditorInput editorInput = activeEditor.getEditorInput();
+				if (editorInput != null) {
+					IPath filePath = getSourceFilePathFromEditorInput(editorInput);
+					if (filePath != null) {
+						return filePath.toOSString();
+					}
+				}
+			}
+		}
+
 		ITranslationUnit tu = (ITranslationUnit) options.get(DefaultCodeFormatterConstants.FORMATTER_TRANSLATION_UNIT);
 
 		if (tu == null) {
@@ -79,6 +103,31 @@ public class ClangFormatFormatter extends CodeFormatter {
 			String root = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
 			return new File(root, "a.cc").getAbsolutePath();
 		}
+	}
+
+	private static IPath getSourceFilePathFromEditorInput(IEditorInput editorInput) {
+		if (editorInput instanceof IURIEditorInput) {
+			URI uri = ((IURIEditorInput) editorInput).getURI();
+			if (uri != null) {
+				IPath path = URIUtil.toPath(uri);
+				if (path != null) {
+					  return path;
+				}
+			}
+		}
+
+		if (editorInput instanceof IFileEditorInput) {
+			IFile file = ((IFileEditorInput) editorInput).getFile();
+			if (file != null) {
+				return file.getLocation();
+			}
+		}
+
+		if (editorInput instanceof ILocationProvider) {
+			return ((ILocationProvider) editorInput).getPath(editorInput);
+		}
+
+		return null;
 	}
 
 	@Override
