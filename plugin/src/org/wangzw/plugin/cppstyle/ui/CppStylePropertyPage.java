@@ -37,6 +37,8 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.Workbench;
 import org.wangzw.plugin.cppstyle.CpplintCheckSettings;
 
+import org.eclipse.cdt.core.model.ICElement;
+
 public class CppStylePropertyPage extends PropertyPage implements
 		SelectionListener, IPropertyChangeListener, ModifyListener {
 
@@ -164,20 +166,19 @@ public class CppStylePropertyPage extends PropertyPage implements
 
 		ISelection selection = selectionService.getSelection();
 
-		IProject project = null;
 		if (selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection)
-					.getFirstElement();
-
+			Object element = ((IStructuredSelection) selection).getFirstElement();
+			IProject project = null;		
 			if (element instanceof IResource) {
 				project = ((IResource) element).getProject();
 			}
+			else if (element instanceof ICElement) {
+				project = ((ICElement) element).getResource().getProject();
+			}
+			if (project != null) {
+				return project.getLocation().toOSString();
+			}
 		}
-
-		if (project != null) {
-			return project.getLocation().toOSString();
-		}
-
 		return null;
 	}
 
