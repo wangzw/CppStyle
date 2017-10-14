@@ -49,6 +49,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 CppStyle can be installed like other eclipse plugins from this site.
 
+    http://www.cppstyle.com/update (Latest)
     http://www.cppstyle.com/mars (Eclipse Mars)
     http://www.cppstyle.com/luna (Eclipse Luna)
     http://www.cppstyle.com/kepler (Eclipse Kepler)
@@ -57,6 +58,12 @@ Go to **Help -> Install New Software** page, click **Add** button and then enter
 
 Select **CppStyle** from drop-down list and then check the name **CppStyle** listed in the page. And then click **Next** and **OK** until restart.
 
+### Manual
+
+* Build CppStye with maven first. ```mvn clean package```
+* Install CppStyle with local update site ```file:///<YOUR_CODE_PATH>/update/target/site```
+
+Restart Eclipse.
 
 ## Configure CppStyle
 
