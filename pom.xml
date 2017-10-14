@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cppstyle-group</groupId>
 	<artifactId>cppstyle</artifactId>
-	<version>1.4.0.6</version>
+	<version>1.5.0.0</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>plugin</module>
@@ -17,12 +17,12 @@
 		<repository>
 			<id>eclipse</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/mars</url>
+			<url>http://download.eclipse.org/releases/oxygen</url>
 		</repository>
 		<repository>
 			<id>cdt</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/cdt/releases/8.8</url>
+			<url>http://download.eclipse.org/tools/cdt/releases/9.3</url>
 		</repository>
 	</repositories>
 
