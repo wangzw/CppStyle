@@ -38,6 +38,8 @@ import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -74,15 +76,23 @@ public class ClangFormatFormatter extends CodeFormatter {
 	}
 
 	private String getSourceFilePath() {
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		if (page != null) {
-			IEditorPart activeEditor = page.getActiveEditor();
-			if (activeEditor != null) {
-				IEditorInput editorInput = activeEditor.getEditorInput();
-				if (editorInput != null) {
-					IPath filePath = getSourceFilePathFromEditorInput(editorInput);
-					if (filePath != null) {
-						return filePath.toOSString();
+		IWorkbench wb = PlatformUI.getWorkbench();
+		if (wb != null)
+		{
+			IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
+			if (window != null)
+			{
+				IWorkbenchPage page = window.getActivePage();
+				if (page != null) {
+					IEditorPart activeEditor = page.getActiveEditor();
+					if (activeEditor != null) {
+						IEditorInput editorInput = activeEditor.getEditorInput();
+						if (editorInput != null) {
+							IPath filePath = getSourceFilePathFromEditorInput(editorInput);
+							if (filePath != null) {
+								return filePath.toOSString();
+							}
+						}
 					}
 				}
 			}
