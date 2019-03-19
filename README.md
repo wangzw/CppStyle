@@ -6,9 +6,9 @@ CppStyle
 **An Eclipse plugin that integrates the clang-format tool as an alternative C/C++ code formatter and checks C++ coding style with the cpplint.py tool.**
 
 ## Description
-A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use Eclipse as a C/C++ IDE, but it is a little difficult to integrate an external tool to Eclipse. People have to switch to a command line and run the tools to format the code and check the coding style. And then they need to switch back to Eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, this is irritating. 
+A consistent coding style is important for a project. And many projects use tools to format the code and check coding style. Many developers use Eclipse as a C/C++ IDE, but it is a little difficult to integrate an external tool to Eclipse. People have to switch to a command line and run the tools to format the code and check the coding style. And then they need to switch back to Eclipse to find the line and fix the coding style issue based on the tool's output. For the "lazy" people like me, this is irritating.
 
-The expected behavious is that people just format the code fragment by first selecting it and then pressing `Command + Shift + f` on MacOS or `Ctrl + Shift + f` on Linux and other systems. Further more, the coding style checker is run whenever a file is saved and all the issues are marked on the editor. That is exactly what CppStyle does.
+The expected behaviors is that people just format the code fragment by first selecting it and then pressing `Command + Shift + f` on MacOS or `Ctrl + Shift + f` on Linux and other systems. Further more, the coding style checker is run whenever a file is saved and all the issues are marked on the editor. That is exactly what CppStyle does.
 
 There are many C/C++ code format tools such as "[astyle](http://astyle.sourceforge.net/)" but currently **"[clang-format](http://clang.llvm.org/docs/ClangFormat.html)"** is my favorite. It has several pre-defined styles and is highly configurable.
 
@@ -24,7 +24,7 @@ There are many C/C++ code format tools such as "[astyle](http://astyle.sourcefor
     sudo chmod a+x /usr/bin/cpplint.py
 
 ### Install clang-format on Linux/MacOS
-clanf-format can be built from llvm/clang source. But installing from binary is much easier.
+clang-format can be built from llvm/clang source. But installing from binary is much easier.
 
 For Ubuntu
 
@@ -33,7 +33,7 @@ For Ubuntu
 
 On 64 bit platform, clang-format can also be downloaded from this [page](https://sublime.wbond.net/packages/Clang%20Format).
 
-If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/releases/download.html) and extract the clang-format binary yourself. Just extract the .tar.xz file and copy bin/clang-format into your PATH (e.g. /usr/local/bin). - Set the path to the clang-format binaries. 
+If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/releases/download.html) and extract the clang-format binary yourself. Just extract the .tar.xz file and copy bin/clang-format into your PATH (e.g. /usr/local/bin). - Set the path to the clang-format binaries.
 
 ## Installation
 
@@ -43,7 +43,7 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 **Drag the above button to your running Eclipse workspace**
 
-[Go to Eclipse Marketplace page] (https://marketplace.eclipse.org/content/cppstyle) 
+[Go to Eclipse Marketplace page] (https://marketplace.eclipse.org/content/cppstyle)
 
 ### Install from update site
 
@@ -82,7 +82,7 @@ CppStyle does not support appending command line parameters to clang-format and 
 
 CppStyle will pass the full absolute path of the source file to clang-format in command line. And clang-format will try to find the configuration file named **.clang-format** in the source file's path, and its parent's path if not found previously, and parent's path of the parent and so on.
 
-So put the configuration file **.clang-format** into the project's root direcotry can make it work for all source files in the project.
+So put the configuration file **.clang-format** into the project's root directory can make it work for all source files in the project.
 
 Further more, you can also add the configuration file **.clang-format** into Eclipse workspace root directory to make it work for all projects in the workspace.
 
@@ -94,7 +94,7 @@ To generate the clang-format configuration file **.clang-format**:
 
 ## To configure cpplint.py
 
-By default, if you enable `cpplint.py` in **CppStyle** page, `cpplint.py` will be triggered everytime when you save a file. You can also trigger `cpplint.py` by click the button **Run C/C++ Code Analysis** in the popup menu when you right click the file, directory or the entire project in **Project Explorer**.
+By default, if you enable `cpplint.py` in **CppStyle** page, `cpplint.py` will be triggered every time when you save a file. You can also trigger `cpplint.py` by click the button **Run C/C++ Code Analysis** in the popup menu when you right click the file, directory or the entire project in **Project Explorer**.
 
 CppStyle will pass source file's full absolute path to `cpplint.py` in the command line. And `cpplint.py` also supports per-directory configuration by the configuration file named `CPPLINT.cfg`.
 
@@ -114,7 +114,7 @@ To get the details of these options you can run the command:
 
 ## To enable or disable cpplint.py on specific issues or files
 
-There are two ways to enable or disable cpplint.py on specific issues or files. The first and recommended one is to use configure file named `CPPLINT.cfg`. The benefit of using configure file is that it can be version controled and shared with others in a team. It also can produce the consistent result if you use `cpplint.py` in command line instead of CppStyle in Eclipse.
+There are two ways to enable or disable cpplint.py on specific issues or files. The first and recommended one is to use configure file named `CPPLINT.cfg`. The benefit of using configure file is that it can be version controlled and shared with others in a team. It also can produce the consistent result if you use `cpplint.py` in command line instead of CppStyle in Eclipse.
 
     The "filter" option is similar in function to --filter flag. It specifies
     message filters in addition to the |_DEFAULT_FILTERS| and those specified
@@ -124,4 +124,4 @@ There are two ways to enable or disable cpplint.py on specific issues or files. 
     a file name. If the expression matches, the file is skipped and not run
     through liner.
 
-The other way is to configure **Code Analysis** in **Perference -> C/C++ -> Code Analysis -> Cpplint Issues** globally, or in **Project property -> C/C++ General -> Code Analysis -> Cpplint Issues** for a C/C++ project. Eclipse Mars has [bug](https://bugs.eclipse.org/bugs/show_bug.cgi?id=471967) to prevent opening **Code Analysis** page in peoject's property.
+The other way is to configure **Code Analysis** in **Preferences -> C/C++ -> Code Analysis -> Cpplint Issues** globally, or in **Project property -> C/C++ General -> Code Analysis -> Cpplint Issues** for a C/C++ project. Eclipse Mars has [bug](https://bugs.eclipse.org/bugs/show_bug.cgi?id=471967) to prevent opening **Code Analysis** page in project's property.
