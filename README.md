@@ -112,6 +112,10 @@ To get the details of these options you can run the command:
 
     cpplint.py --help
 
+### To use cpplint.py on Windows
+
+On Windows, the path in the CppStyle settings should point to an executable of cpplint. One option is to create an executable from cpplint.py using PyInstaller.
+
 ## To enable or disable cpplint.py on specific issues or files
 
 There are two ways to enable or disable cpplint.py on specific issues or files. The first and recommended one is to use configure file named `CPPLINT.cfg`. The benefit of using configure file is that it can be version controlled and shared with others in a team. It also can produce the consistent result if you use `cpplint.py` in command line instead of CppStyle in Eclipse.
