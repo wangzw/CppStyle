@@ -70,7 +70,7 @@ Restart Eclipse.
 
 To configure CppStyle globally, go to **Preferences -> C/C++ -> CppStyle** dialog.
 
-To configure CppSytle for a C/C++ project, go to **Project properties -> CppStyle** dialog.
+To configure CppStyle for a C/C++ project, go to **Project properties -> CppStyle** dialog.
 
 To enable CppStyle(clang-format) as default C/C++ code formatter, go to **Preferences -> C/C++ -> Code Style -> Formatter** page and switch **"Code Formatter"** from **[built-in]** to **"CppStyle (clang-format)"**
 
