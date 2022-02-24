@@ -49,11 +49,11 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 CppStyle can be installed like other eclipse plugins from this site.
 
-    http://www.cppstyle.com/update (Latest)
-    http://www.cppstyle.com/oxygen (Eclipse Oxygen)
-    http://www.cppstyle.com/mars (Eclipse Mars)
-    http://www.cppstyle.com/luna (Eclipse Luna)
-    http://www.cppstyle.com/kepler (Eclipse Kepler)
+    http://www.zhanwei.wang/CppStyle/update (Latest)
+    http://www.zhanwei.wang/CppStyle/oxygen (Eclipse Oxygen)
+    http://www.zhanwei.wang/CppStyle/mars (Eclipse Mars)
+    http://www.zhanwei.wang/CppStyle/luna (Eclipse Luna)
+    http://www.zhanwei.wang/CppStyle/kepler (Eclipse Kepler)
 
 Go to **Help -> Install New Software** page, click **Add** button and then enter a name (`CppStyle`) and the above URL, and then click **OK**.
 
