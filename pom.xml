@@ -13,16 +13,21 @@
 		<module>update</module>
 	</modules>
 
+	<properties>
+		<tycho.version>4.0.1</tycho.version>
+		<targetplatform.version>4.0.1</targetplatform.version>
+	</properties>
+
 	<repositories>
 		<repository>
 			<id>eclipse</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/oxygen</url>
+			<url>http://download.eclipse.org/releases/2023-06</url>
 		</repository>
 		<repository>
 			<id>cdt</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/cdt/releases/9.3</url>
+			<url>http://download.eclipse.org/tools/cdt/releases/11.2</url>
 		</repository>
 	</repositories>
 
@@ -31,14 +36,14 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>0.22.0</version>
+				<version>${tycho.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
-				<version>0.22.0</version>
+				<version>${targetplatform.version}</version>
 				<configuration>
 					<resolver>p2</resolver>
 				</configuration>
