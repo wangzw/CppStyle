@@ -1,5 +1,8 @@
 CppStyle
 ========================
+
+NOTE: I stop using Eclipse for many years. So this plugin is almost abandoned.
+
 [![Build Status](https://travis-ci.org/wangzw/CppStyle.svg?branch=master)](https://travis-ci.org/wangzw/CppStyle)
 
 <a href="/marketplace-client-intro?mpc_install=5779759" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client">
