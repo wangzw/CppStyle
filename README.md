@@ -1,8 +1,10 @@
 CppStyle
 ========================
 [![Build Status](https://travis-ci.org/wangzw/CppStyle.svg?branch=master)](https://travis-ci.org/wangzw/CppStyle)
-[![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/modules/custom/eclipsefdn/eclipsefdn_marketplace/images/btn-install.svg)](/marketplace-client-intro?mpc_install=5779759"Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
 
+<a href="/marketplace-client-intro?mpc_install=5779759" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client">
+<img style="width:80px;" typeof="foaf:Image" class="img-responsive" src="https://marketplace.eclipse.org/modules/custom/eclipsefdn/eclipsefdn_marketplace/images/btn-install.svg" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" />
+</a>
 
 **An Eclipse plugin that integrates the clang-format tool as an alternative C/C++ code formatter and checks C++ coding style with the cpplint.py tool.**
 
@@ -40,7 +42,9 @@ If you prefer, you can download the [entire LLVM toolchain](http://llvm.org/rele
 
 ### Install from Eclipse Marketplace (Recommend)
 
-[![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/modules/custom/eclipsefdn/eclipsefdn_marketplace/images/btn-install.svg)](/marketplace-client-intro?mpc_install=5779759"Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client")
+<a href="/marketplace-client-intro?mpc_install=5779759" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client">
+<img style="width:80px;" typeof="foaf:Image" class="img-responsive" src="https://marketplace.eclipse.org/modules/custom/eclipsefdn/eclipsefdn_marketplace/images/btn-install.svg" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" />
+</a>
 
 **Drag the above button to your running Eclipse workspace**
 
